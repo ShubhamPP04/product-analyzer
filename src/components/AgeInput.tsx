@@ -33,35 +33,35 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 border border-green-100">
+    <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 md:p-12 border-2 border-green-100">
       {onCancel && (
         <button
           onClick={onCancel}
-          className="ml-auto mb-2 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition"
+          className="ml-auto mb-4 flex items-center gap-2 text-base text-gray-500 hover:text-gray-700 transition"
           type="button"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
           Cancel
         </button>
       )}
-      <div className="flex justify-center mb-6">
-        <div className="bg-green-100 p-4 rounded-full">
-          <User className="w-12 h-12 text-green-600" />
+      <div className="flex justify-center mb-8">
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-6 rounded-3xl shadow-xl">
+          <User className="w-16 h-16 text-white" />
         </div>
       </div>
       
-      <h2 className="text-2xl sm:text-3xl font-bold text-green-800 text-center mb-3">
-        {initialAge ? 'Update Your Age' : 'Welcome! Let’s Get Started'}
+      <h2 className="text-3xl sm:text-4xl font-bold text-green-800 text-center mb-4">
+        {initialAge ? 'Update Your Age' : 'Welcome! Let&apos;s Get Started'}
       </h2>
-      <p className="text-gray-600 text-center mb-8">
+      <p className="text-xl text-gray-600 text-center mb-10 leading-relaxed">
         {initialAge
           ? 'Adjust your age to keep recommendations accurate.'
           : 'Please enter your age to get personalized health insights.'}
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <label htmlFor="age" className="block text-lg font-medium text-gray-700 mb-2">
+          <label htmlFor="age" className="block text-2xl font-semibold text-gray-700 mb-3">
             Your Age
           </label>
           <input
@@ -69,20 +69,20 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
             id="age"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full px-4 py-3 text-lg border-2 border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+            className="w-full px-6 py-5 text-2xl border-2 border-green-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-green-500/50 focus:border-green-500 transition"
             placeholder="Enter your age"
             min="1"
             max="120"
           />
           {error && (
-            <p className="mt-2 text-red-600 text-sm">{error}</p>
+            <p className="mt-3 text-red-600 text-lg">{error}</p>
           )}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
+            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-xl font-bold py-5 px-6 rounded-2xl transition duration-200 shadow-xl hover:shadow-2xl hover:scale-105"
           >
             {initialAge ? 'Save Age' : 'Continue to Camera'}
           </button>
@@ -90,7 +90,7 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
             <button
               type="button"
               onClick={onCancel}
-              className="w-full border border-green-200 text-green-700 font-semibold py-3 px-6 rounded-lg hover:bg-green-50 transition"
+              className="w-full border-2 border-green-200 text-green-700 text-xl font-bold py-5 px-6 rounded-2xl hover:bg-green-50 transition"
             >
               Cancel
             </button>
@@ -98,8 +98,8 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
         </div>
       </form>
 
-      <div className="mt-8 p-4 bg-green-50 rounded-lg">
-        <p className="text-sm text-green-800 text-center">
+      <div className="mt-10 p-6 bg-green-50 rounded-2xl border border-green-200">
+        <p className="text-lg text-green-800 text-center font-medium">
           🔒 Your information is private and secure
         </p>
       </div>

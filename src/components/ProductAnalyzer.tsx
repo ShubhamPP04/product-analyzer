@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import AgeInput from './AgeInput';
 import CameraCapture from './CameraCapture';
 import AnalysisResult from './AnalysisResult';
-import ProductHistory from './ProductHistory';
 import { AnalysisData, ProductHistoryEntry } from '../types/analysis';
 
 type Step = 'age' | 'camera' | 'result';
@@ -29,7 +28,6 @@ export default function ProductAnalyzer() {
   const [step, setStep] = useState<Step>('age');
   const [age, setAge] = useState<number | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
-  const [history, setHistory] = useState<ProductHistoryEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [editingAge, setEditingAge] = useState(false);
@@ -44,15 +42,7 @@ export default function ProductAnalyzer() {
       setStep('camera');
     }
 
-    const storedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
-    if (storedHistory) {
-      try {
-        const parsedHistory = JSON.parse(storedHistory) as ProductHistoryEntry[];
-        setHistory(parsedHistory);
-      } catch (error) {
-        console.warn('Failed to parse history from storage', error);
-      }
-    }
+
   }, []);
 
   useEffect(() => {
@@ -137,11 +127,12 @@ export default function ProductAnalyzer() {
       setStep('result');
 
       const entry = createHistoryEntry(age, data);
-      setHistory((prev) => {
-        const updated = [entry, ...prev].slice(0, 12);
+      if (typeof window !== 'undefined') {
+        const storedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
+        const history = storedHistory ? JSON.parse(storedHistory) : [];
+        const updated = [entry, ...history].slice(0, 12);
         persistHistory(updated);
-        return updated;
-      });
+      }
     } catch (error) {
       console.error('Error analyzing product:', error);
       alert('Failed to analyze product. Please try again in a moment.');
@@ -172,15 +163,8 @@ export default function ProductAnalyzer() {
     }
   };
 
-  const handleSelectHistory = (entry: ProductHistoryEntry) => {
-    setAnalysis(entry.analysis);
-    setAge(entry.age);
-    persistAge(entry.age);
-    setStep('result');
-  };
-
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto">
       {step === 'age' && (
         <AgeInput
           onSubmit={handleAgeSubmit}
@@ -202,21 +186,12 @@ export default function ProductAnalyzer() {
       )}
 
       {step === 'result' && analysis && age !== null && (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <AnalysisResult
-            analysis={analysis}
-            age={age}
-            onAnalyzeAnother={handleAnalyzeAnother}
-            onEditAge={handleEditAge}
-          />
-          <ProductHistory history={history} onSelect={handleSelectHistory} />
-        </div>
-      )}
-
-      {step !== 'result' && history.length > 0 && (
-        <div className="mt-4">
-          <ProductHistory history={history} onSelect={handleSelectHistory} compact />
-        </div>
+        <AnalysisResult
+          analysis={analysis}
+          age={age}
+          onAnalyzeAnother={handleAnalyzeAnother}
+          onEditAge={handleEditAge}
+        />
       )}
     </div>
   );
