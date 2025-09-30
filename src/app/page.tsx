@@ -1,103 +1,79 @@
-import Image from "next/image";
+import { History, ShieldCheck, Sparkles, Scan } from 'lucide-react';
+import ProductAnalyzer from '@/components/ProductAnalyzer';
+
+const highlights = [
+  {
+    icon: Sparkles,
+    title: 'Gemini 2.5 Flash Lite',
+    description: 'High-context AI vision built right in, no extra setup needed.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Age-Safe Guidance',
+    description: 'Recommendations adapt instantly when you update your age.',
+  },
+  {
+    icon: Scan,
+    title: 'Camera-First Workflow',
+    description: 'Switch cameras, preview captures, and track analysis progress.',
+  },
+  {
+    icon: History,
+    title: 'Smart History',
+    description: 'Jump back into recent products with the insights you already trust.',
+  },
+];
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="relative min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="absolute top-1/3 -left-28 h-96 w-96 rounded-full bg-cyan-200/30 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-amber-100/30 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-white to-transparent" />
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="relative z-10 container mx-auto px-4 pb-16 pt-12 md:pt-16">
+        <header className="mx-auto max-w-4xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-white/80 px-4 py-2 text-sm font-medium text-green-700 shadow-sm backdrop-blur">
+            🇮🇳 Built for mindful choices
+          </span>
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+            Decode your daily products with a health companion that feels human.
+          </h1>
+          <p className="mt-4 text-lg text-slate-600">
+            Capture any label, get a personalized wellness score, and build a living history of the items your family uses every day.
+          </p>
+        </header>
+
+        <section className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2">
+          {highlights.map(({ icon: Icon, title, description }) => (
+            <div
+              key={title}
+              className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-5 shadow-lg shadow-emerald-100/40 transition duration-200 hover:-translate-y-1 hover:bg-white/90 hover:shadow-xl backdrop-blur"
+            >
+              <div className="mb-4 inline-flex rounded-full bg-emerald-600/10 p-3 text-emerald-700">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{description}</p>
+              <div className="pointer-events-none absolute inset-x-8 bottom-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent transition duration-300 group-hover:scale-x-100" />
+            </div>
+          ))}
+        </section>
+
+        <section className="relative mx-auto mt-12 max-w-6xl">
+          <div className="absolute -inset-1 rounded-[36px] bg-gradient-to-br from-emerald-200/60 via-white to-emerald-100/50 opacity-80 blur-2xl" />
+          <div className="relative rounded-[32px] border border-white/60 bg-white/80 p-4 shadow-[0_40px_100px_-60px_rgba(16,185,129,0.65)] backdrop-blur-xl sm:p-6 md:p-10">
+            <ProductAnalyzer />
+          </div>
+        </section>
+
+        <footer className="mx-auto mt-12 max-w-3xl text-center text-sm text-slate-500">
+          Product insights leverage clinical guidelines but are not a substitute for medical advice. Always consult a qualified professional for diagnosis or treatment.
+        </footer>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
