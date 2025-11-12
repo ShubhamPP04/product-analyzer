@@ -17,7 +17,7 @@ export default function AnalyzerPage() {
               Analyze Your Product
             </h1>
             <p className="text-lg text-slate-600">
-              Get instant health insights with caring guidance
+              Get instant health insights
             </p>
           </div>
 

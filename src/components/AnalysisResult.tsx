@@ -20,28 +20,28 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
     chipText: string;
   }> = {
     take_it: {
-      label: 'Mom says you can have it',
-      description: 'Enjoy it mindfully and keep portions balanced.',
+      label: 'Recommended',
+      description: 'Enjoy this product mindfully and keep portions balanced.',
       icon: Heart,
       toneClass: 'text-emerald-700',
       bgClass: 'bg-emerald-50 border-emerald-200',
-      chipText: 'Green signal with love',
+      chipText: 'Positive',
     },
     avoid_it: {
-      label: 'Mom would skip this one',
-      description: 'Let’s look for a healthier alternative together.',
+      label: 'Not Recommended',
+      description: 'Consider a healthier alternative.',
       icon: Ban,
       toneClass: 'text-rose-700',
       bgClass: 'bg-rose-50 border-rose-200',
-      chipText: 'No from mom',
+      chipText: 'Negative',
     },
     think_twice: {
-      label: 'Mom says think twice',
-      description: 'Okay occasionally, but only with the right balance.',
+      label: 'Consider with Caution',
+      description: 'Consume occasionally and with balanced portions.',
       icon: AlertTriangle,
       toneClass: 'text-amber-700',
       bgClass: 'bg-amber-50 border-amber-200',
-      chipText: 'Have with caution',
+      chipText: 'Caution',
     },
   };
 
@@ -107,7 +107,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         </div>
 
         <div className="mt-4 rounded-xl border border-white/60 bg-white/80 p-4 text-sm leading-relaxed text-slate-700">
-          {analysis.momAdvice || 'Sharing this as a caring reminder: let’s be mindful and choose what keeps you energetic and happy.'}
+          {analysis.momAdvice || 'Reminder: Be mindful of your choices to maintain energy and well-being.'}
         </div>
       </div>
 
