@@ -1,204 +1,146 @@
-import { Sparkles, ShieldCheck, Camera, History, ArrowRight, Heart, Zap, Users } from 'lucide-react';
+'use client';
+
+import { ArrowRight, Camera, History, Heart, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
-
-const features = [
-  {
-    icon: Sparkles,
-    title: 'AI-Powered Analysis',
-    description: 'Advanced Gemini AI reads and understands product labels instantly.',
-    color: 'from-emerald-500 to-teal-500',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Age-Specific Guidance',
-    description: 'Get personalized recommendations based on your age and health needs.',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    icon: Heart,
-    title: 'Mom-Style Care',
-    description: 'Warm, caring advice that feels like talking to your mother.',
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    icon: Zap,
-    title: 'Instant Results',
-    description: 'Snap a photo and get comprehensive health insights in seconds.',
-    color: 'from-amber-500 to-orange-500',
-  },
-];
-
-const steps = [
-  {
-    number: '1',
-    title: 'Enter Your Age',
-    description: 'Tell us your age for personalized insights',
-  },
-  {
-    number: '2',
-    title: 'Capture Label',
-    description: 'Take a photo of the product ingredients',
-  },
-  {
-    number: '3',
-    title: 'Get Insights',
-    description: 'Receive detailed health analysis instantly',
-  },
-];
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const features = [
+    {
+      icon: <Shield className="h-10 w-10 text-emerald-600" />,
+      title: "Ingredient Analysis",
+      description: "Deep analysis of product ingredients and their health impact"
+    },
+    {
+      icon: <Heart className="h-10 w-10 text-emerald-600" />,
+      title: "Health Rating",
+      description: "Personalized health score based on your age and dietary needs"
+    },
+    {
+      icon: <Zap className="h-10 w-10 text-emerald-600" />,
+      title: "Instant Insights",
+      description: "Get results in seconds with our advanced AI technology"
+    }
+  ];
+
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Background Elements */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
-        <div className="absolute top-1/3 -left-32 h-[500px] w-[500px] rounded-full bg-cyan-200/30 blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-amber-100/30 blur-3xl" />
-      </div>
-
-      <main className="relative z-10">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur">
-              <span className="text-2xl">🇮🇳</span>
-              <span className="text-sm font-semibold text-green-700">Built for Indian Families</span>
-            </div>
-            
-            <h1 className="mb-6 text-5xl font-bold tracking-tight text-slate-900 md:text-6xl lg:text-7xl">
-              Know What You&apos;re
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> Eating</span>
-            </h1>
-            
-            <p className="mb-10 text-lg text-slate-600 md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed">
-              Scan any product label and get instant health insights with caring, mom-style guidance. Make informed choices for your family&apos;s wellness.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/analyzer"
-                className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-green-200 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-green-300"
-              >
-                <Camera className="h-6 w-6" />
-                <span>Get Started</span>
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-              
-              <Link
-                href="/history"
-                className="flex items-center gap-3 rounded-2xl border-2 border-green-600 bg-white px-8 py-4 text-lg font-semibold text-green-600 transition-all hover:bg-green-50"
-              >
-                <History className="h-6 w-6" />
-                <span>View History</span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Grid */}
-        <section className="container mx-auto px-4 py-16 md:py-20">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
-              Why Choose Product Analyzer?
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Powerful features designed to help you make healthier choices for your family
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-6 shadow-lg backdrop-blur transition-all hover:-translate-y-2 hover:shadow-2xl"
-                >
-                  <div className={`mb-4 inline-flex rounded-2xl bg-gradient-to-br ${feature.color} p-4 text-white shadow-lg`}>
-                    <Icon className="h-7 w-7" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-slate-900">{feature.title}</h3>
-                  <p className="text-slate-600">{feature.description}</p>
-                  <div className="pointer-events-none absolute inset-x-8 bottom-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent transition duration-300 group-hover:scale-x-100" />
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
+      <main className="flex-grow pt-16 pb-24">
+        <div className="relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+          <div className="absolute top-1/3 right-10 w-80 h-80 bg-cyan-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+          <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className={`transition-all duration-1000 ease-out transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="max-w-4xl mx-auto text-center mb-16 mt-12">
+                <div className="inline-block mb-6">
+                  <span className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium">
+                    India's #1 Product Analyzer
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        </section>
+                
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
+                  Know What You&apos;re{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">
+                    Eating
+                  </span>
+                </h1>
 
-        {/* How It Works */}
-        <section className="container mx-auto px-4 py-16 md:py-20">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
-                Simple as 1-2-3
-              </h2>
-              <p className="text-lg text-slate-600">
-                Getting health insights is easier than ever
-              </p>
-            </div>
-
-            <div className="grid gap-8 md:grid-cols-3">
-              {steps.map((step, index) => (
-                <div key={step.number} className="relative">
-                  <div className="relative rounded-2xl border-2 border-green-200 bg-white p-8 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl">
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-3xl font-bold text-white shadow-lg">
-                      {step.number}
-                    </div>
-                    <h3 className="mb-2 text-xl font-bold text-slate-900">{step.title}</h3>
-                    <p className="text-slate-600">{step.description}</p>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-1/2 -right-4 z-10">
-                      <ArrowRight className="h-8 w-8 text-green-400" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12 text-center">
-              <Link
-                href="/analyzer"
-                className="inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-10 py-5 text-xl font-semibold text-white shadow-xl shadow-green-200 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-green-300"
-              >
-                <Camera className="h-6 w-6" />
-                <span>Start Analyzing Now</span>
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Trust Section */}
-        <section className="container mx-auto px-4 py-16 md:py-20">
-          <div className="mx-auto max-w-4xl rounded-3xl border border-green-200 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-8 md:p-12 shadow-2xl">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-xl">
-                <Users className="h-12 w-12 text-white" />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="mb-3 text-2xl font-bold text-slate-900 md:text-3xl">
-                  Trusted by Indian Families
-                </h3>
-                <p className="text-lg text-slate-600 leading-relaxed">
-                  Join thousands of families making healthier choices every day. Our AI-powered analysis helps you understand what&apos;s really in your food, with guidance that feels like home.
+                <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 mb-12">
+                  Scan any product label and get instant health insights. Make informed choices for your family&apos;s wellness with AI-powered analysis.
                 </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                  <Link
+                    href="/analyzer"
+                    className="group relative flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-8 py-5 text-lg font-semibold text-white shadow-lg shadow-emerald-200 transition-all duration-300 hover:from-emerald-700 hover:to-emerald-800 hover:scale-105 hover:shadow-xl"
+                  >
+                    <Camera className="h-6 w-6" />
+                    <span>Get Started</span>
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    <div className="absolute inset-0 rounded-full border border-white/10" />
+                  </Link>
+
+                  <Link
+                    href="/history"
+                    className="group flex items-center justify-center gap-3 rounded-full border-2 border-emerald-600 bg-white/80 backdrop-blur-sm px-8 py-5 text-lg font-semibold text-emerald-700 transition-all duration-300 hover:bg-emerald-50 hover:scale-105 shadow-md"
+                  >
+                    <History className="h-6 w-6" />
+                    <span>View History</span>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                  {features.map((feature, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="flex justify-center mb-4">
+                        {feature.icon}
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-green-100 bg-white/50 backdrop-blur">
-          <div className="container mx-auto px-4 py-8">
-            <p className="text-center text-sm text-slate-500">
-              Made with 💚 for India • Product insights are for informational purposes only
-            </p>
-          </div>
-        </footer>
+        </div>
       </main>
+
+      <footer className="py-8 border-t border-gray-200 bg-white/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-center text-sm text-gray-600 mb-4 md:mb-0">
+              Made with 💚 for India
+            </p>
+            <div className="flex space-x-6">
+              <Link href="/privacy" className="text-sm text-gray-600 hover:text-emerald-700 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-sm text-gray-600 hover:text-emerald-700 transition-colors">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      <style jsx global>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   );
 }
-
