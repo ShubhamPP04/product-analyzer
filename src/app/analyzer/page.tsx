@@ -2,28 +2,28 @@ import ProductAnalyzer from '@/components/ProductAnalyzer';
 
 export default function AnalyzerPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-[#f8fafc]">
       {/* Background Elements */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
-        <div className="absolute top-1/3 -left-32 h-[500px] w-[500px] rounded-full bg-cyan-200/30 blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-amber-100/30 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob" />
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob animation-delay-2000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-teal-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob animation-delay-4000" />
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 py-8 md:py-12">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-slate-900 md:text-4xl mb-2">
-              Analyze Your Product
+      <main className="relative z-10 container mx-auto px-4 py-24 md:py-32">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-12 text-center animate-fade-in-up">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-4">
+              Analyze Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Product</span>
             </h1>
-            <p className="text-lg text-slate-600">
-              Get instant health insights
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+              Upload or capture a photo of the ingredients label to get instant, AI-powered health insights tailored to you.
             </p>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-1 rounded-[36px] bg-gradient-to-br from-emerald-200/60 via-white to-emerald-100/50 opacity-80 blur-2xl" />
-            <div className="relative rounded-[32px] border border-white/60 bg-white/80 p-4 shadow-[0_40px_100px_-60px_rgba(16,185,129,0.65)] backdrop-blur-xl sm:p-6 md:p-10">
+          <div className="relative animate-fade-in-up delay-100">
+            <div className="absolute -inset-1 rounded-[36px] bg-gradient-to-br from-emerald-400/30 via-cyan-400/30 to-teal-400/30 blur-2xl opacity-50" />
+            <div className="relative">
               <ProductAnalyzer />
             </div>
           </div>

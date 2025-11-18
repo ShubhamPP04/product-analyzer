@@ -41,8 +41,6 @@ export default function ProductAnalyzer() {
       setAge(storedAge);
       setStep('camera');
     }
-
-
   }, []);
 
   useEffect(() => {
@@ -164,7 +162,7 @@ export default function ProductAnalyzer() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="w-full">
       {step === 'age' && (
         <AgeInput
           onSubmit={handleAgeSubmit}

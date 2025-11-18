@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Camera, History, Heart, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Camera, History, Heart, Shield, Zap, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
@@ -13,134 +13,117 @@ export default function Home() {
 
   const features = [
     {
-      icon: <Shield className="h-10 w-10 text-emerald-600" />,
+      icon: <Shield className="h-8 w-8 text-emerald-600" />,
       title: "Ingredient Analysis",
-      description: "Deep analysis of product ingredients and their health impact"
+      description: "Deep AI analysis of product ingredients to uncover hidden health impacts."
     },
     {
-      icon: <Heart className="h-10 w-10 text-emerald-600" />,
+      icon: <Heart className="h-8 w-8 text-rose-500" />,
       title: "Health Rating",
-      description: "Personalized health score based on your age and dietary needs"
+      description: "Personalized health score tailored to your specific dietary needs and age."
     },
     {
-      icon: <Zap className="h-10 w-10 text-emerald-600" />,
+      icon: <Zap className="h-8 w-8 text-amber-500" />,
       title: "Instant Insights",
-      description: "Get results in seconds with our advanced AI technology"
+      description: "Get comprehensive results in seconds with our advanced scanning technology."
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
-      <main className="flex-grow pt-16 pb-24">
-        <div className="relative overflow-hidden">
-          {/* Decorative background elements */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
-          <div className="absolute top-1/3 right-10 w-80 h-80 bg-cyan-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
-          <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
-          
-          <div className="container mx-auto px-4 relative z-10">
-            <div className={`transition-all duration-1000 ease-out transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <div className="max-w-4xl mx-auto text-center mb-16 mt-12">
-                <div className="inline-block mb-6">
-                  <span className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium">
-                    India&apos;s #1 Product Analyzer
-                  </span>
+    <div className="min-h-screen bg-[#f8fafc] overflow-hidden">
+      <main className="relative pt-32 pb-24">
+        {/* Decorative Background */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob" />
+          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob animation-delay-2000" />
+          <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-teal-200/30 rounded-full mix-blend-multiply filter blur-[120px] animate-blob animation-delay-4000" />
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className={`max-w-5xl mx-auto text-center transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-100 shadow-sm mb-8 animate-fade-in-up">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-sm font-medium text-emerald-800">India&apos;s #1 Health Companion</span>
+            </div>
+
+            {/* Hero Heading */}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-slate-900 mb-8 leading-[1.1] animate-fade-in-up delay-100">
+              Know What You&apos;re{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600">
+                Eating
+              </span>
+            </h1>
+
+            {/* Hero Description */}
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-600 mb-12 leading-relaxed animate-fade-in-up delay-200">
+              Scan any product label and get instant, AI-powered health insights.
+              Make smarter choices for you and your family&apos;s wellness.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-5 justify-center mb-24 animate-fade-in-up delay-300">
+              <Link
+                href="/analyzer"
+                className="group relative flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-emerald-200/50 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-300/50 hover:-translate-y-1 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <Camera className="h-6 w-6" />
+                <span>Start Scanning</span>
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
+
+              <Link
+                href="/history"
+                className="group flex items-center justify-center gap-3 rounded-full bg-white px-8 py-4 text-lg font-semibold text-slate-700 shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-300/50 hover:-translate-y-1 hover:text-emerald-600"
+              >
+                <History className="h-6 w-6 transition-colors group-hover:text-emerald-600" />
+                <span>View History</span>
+              </Link>
+            </div>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto animate-fade-in-up delay-300">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="glass-panel rounded-3xl p-8 text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl group"
+                >
+                  <div className="mb-6 inline-flex p-4 rounded-2xl bg-slate-50 group-hover:bg-white group-hover:shadow-md transition-all duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors">{feature.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{feature.description}</p>
                 </div>
-                
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
-                  Know What You&apos;re{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">
-                    Eating
-                  </span>
-                </h1>
-
-                <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 mb-12">
-                  Scan any product label and get instant health insights. Make informed choices for your family&apos;s wellness with AI-powered analysis.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                  <Link
-                    href="/analyzer"
-                    className="group relative flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-8 py-5 text-lg font-semibold text-white shadow-lg shadow-emerald-200 transition-all duration-300 hover:from-emerald-700 hover:to-emerald-800 hover:scale-105 hover:shadow-xl"
-                  >
-                    <Camera className="h-6 w-6" />
-                    <span>Get Started</span>
-                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    <div className="absolute inset-0 rounded-full border border-white/10" />
-                  </Link>
-
-                  <Link
-                    href="/history"
-                    className="group flex items-center justify-center gap-3 rounded-full border-2 border-emerald-600 bg-white/80 backdrop-blur-sm px-8 py-5 text-lg font-semibold text-emerald-700 transition-all duration-300 hover:bg-emerald-50 hover:scale-105 shadow-md"
-                  >
-                    <History className="h-6 w-6" />
-                    <span>View History</span>
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                  {features.map((feature, index) => (
-                    <div 
-                      key={index} 
-                      className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                    >
-                      <div className="flex justify-center mb-4">
-                        {feature.icon}
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                      <p className="text-gray-600">{feature.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </main>
 
-      <footer className="py-8 border-t border-gray-200 bg-white/50 backdrop-blur-sm">
+      <footer className="py-12 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-center text-sm text-gray-600 mb-4 md:mb-0">
-              Made with 💚 for India
-            </p>
-            <div className="flex space-x-6">
-              <Link href="/privacy" className="text-sm text-gray-600 hover:text-emerald-700 transition-colors">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-white font-bold text-sm">
+                🇮🇳
+              </div>
+              <p className="text-sm font-medium text-slate-600">
+                Made with 💚 for a healthier India
+              </p>
+            </div>
+            <div className="flex gap-8">
+              <Link href="/privacy" className="text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-sm text-gray-600 hover:text-emerald-700 transition-colors">
+              <Link href="/terms" className="text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors">
                 Terms of Service
               </Link>
             </div>
           </div>
         </div>
       </footer>
-
-      <style jsx global>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   );
 }

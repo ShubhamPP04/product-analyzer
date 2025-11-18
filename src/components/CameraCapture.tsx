@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
-import { Camera, RefreshCw, ArrowLeft, Check, SwitchCamera } from 'lucide-react';
+import { Camera, RefreshCw, ArrowLeft, Check, SwitchCamera, ScanLine } from 'lucide-react';
 
 interface CameraCaptureProps {
   onCapture: (imageData: string) => void;
@@ -43,63 +43,73 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 border border-green-100 space-y-6">
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-green-600 hover:text-green-700 mb-6 transition"
-        disabled={loading}
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Back to Age Input
-      </button>
-
-      <div className="flex justify-center mb-6">
-        <div className="bg-green-100 p-4 rounded-full">
-          <Camera className="w-12 h-12 text-green-600" />
-        </div>
+    <div className="glass-panel rounded-3xl p-6 sm:p-8 animate-fade-in-up">
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-500 hover:text-emerald-600 transition font-medium"
+          disabled={loading}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back
+        </button>
+        <h2 className="text-xl font-bold text-slate-900">Scan Product</h2>
+        <div className="w-16"></div> {/* Spacer for centering */}
       </div>
-
-      <h2 className="text-3xl font-bold text-green-800 text-center mb-4">
-        Capture Product Label
-      </h2>
-      <p className="text-gray-600 text-center mb-8">
-        Position the product ingredients label clearly in the camera frame
-      </p>
 
       <div className="space-y-6">
         {cameraError ? (
-          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
-            <p className="text-red-600 font-medium mb-2">
-              Unable to access camera
-            </p>
-            <p className="text-sm text-red-500">
-              Please ensure you have granted camera permissions and try again.
+          <div className="bg-rose-50 border-2 border-rose-100 rounded-2xl p-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-rose-100">
+              <Camera className="w-8 h-8 text-rose-600" />
+            </div>
+            <h3 className="text-lg font-bold text-rose-900 mb-2">Camera Access Required</h3>
+            <p className="text-rose-700 max-w-xs mx-auto">
+              Please allow camera access in your browser settings to scan products.
             </p>
           </div>
         ) : (
-          <div className="relative">
-            <div className="rounded-xl overflow-hidden border-4 border-green-200 bg-black">
-              {!imgSrc ? (
+          <div className="relative overflow-hidden rounded-3xl bg-black shadow-2xl aspect-[3/4] sm:aspect-[4/3]">
+            {!imgSrc ? (
+              <>
                 <Webcam
                   ref={webcamRef}
                   audio={false}
                   screenshotFormat="image/jpeg"
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover"
                   videoConstraints={{
                     facingMode: facingMode,
                   }}
                   onUserMediaError={handleUserMediaError}
                 />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imgSrc} alt="Captured product" className="w-full h-auto" />
-              )}
-            </div>
-            
+                {/* Camera Overlay */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute inset-0 border-[40px] border-black/30 mask-image-scan"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-white/50 rounded-3xl">
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-emerald-500 rounded-tl-xl"></div>
+                    <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-emerald-500 rounded-tr-xl"></div>
+                    <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-emerald-500 rounded-bl-xl"></div>
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-emerald-500 rounded-br-xl"></div>
+
+                    {/* Scanning Animation */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-70 animate-scan"></div>
+                  </div>
+                  <div className="absolute bottom-8 left-0 right-0 text-center">
+                    <p className="text-white/90 font-medium bg-black/40 inline-block px-4 py-2 rounded-full backdrop-blur-sm text-sm">
+                      Position ingredients label in frame
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imgSrc} alt="Captured product" className="w-full h-full object-cover" />
+            )}
+
             {!imgSrc && (
               <button
                 onClick={switchCamera}
-                className="absolute top-4 right-4 bg-white/90 hover:bg-white text-green-700 p-3 rounded-full shadow-lg transition duration-200 transform hover:scale-110"
+                className="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full backdrop-blur-md transition-all duration-200 z-10"
                 title="Switch Camera"
                 type="button"
               >
@@ -108,17 +118,16 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
             )}
 
             {loading && (
-              <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4 text-white">
-                <div className="bg-white/10 rounded-2xl px-6 py-5 flex flex-col items-center gap-3 w-11/12 max-w-xs">
-                  <p className="text-sm uppercase tracking-wide text-white/80">Analyzing</p>
-                  <div className="text-4xl font-semibold">{Math.min(Math.round(progress), 100)}%</div>
-                  <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-400 transition-all duration-200"
-                      style={{ width: `${Math.min(progress, 100)}%` }}
-                    />
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-white z-20">
+                <div className="relative">
+                  <div className="h-24 w-24 rounded-full border-4 border-white/10 border-t-emerald-500 animate-spin"></div>
+                  <div className="absolute inset-0 flex items-center justify-center font-bold text-xl">
+                    {Math.min(Math.round(progress), 100)}%
                   </div>
-                  <p className="text-xs text-white/70 text-center">We’re reading the label and preparing your insights...</p>
+                </div>
+                <div className="text-center max-w-xs">
+                  <h3 className="text-xl font-bold mb-2">Analyzing Ingredients</h3>
+                  <p className="text-white/60 text-sm">Our AI is reading the label and checking for health impacts...</p>
                 </div>
               </div>
             )}
@@ -126,21 +135,22 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
         )}
 
         {!cameraError && (
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
             {!imgSrc ? (
               <button
                 onClick={capture}
-                className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg"
+                className="group relative flex items-center justify-center gap-3 bg-white border-4 border-slate-100 hover:border-emerald-100 p-1.5 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 type="button"
               >
-                <Camera className="w-5 h-5" />
-                Capture Photo
+                <div className="h-16 w-16 rounded-full bg-emerald-500 group-hover:bg-emerald-600 flex items-center justify-center transition-colors">
+                  <Camera className="w-8 h-8 text-white" />
+                </div>
               </button>
             ) : (
               <>
                 <button
                   onClick={retake}
-                  className="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-700 font-bold py-4 px-6 rounded-2xl transition duration-200 disabled:opacity-50"
                   disabled={loading}
                   type="button"
                 >
@@ -150,7 +160,7 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
                 <button
                   onClick={confirmCapture}
                   disabled={loading}
-                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-[2] flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-bold py-4 px-6 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   type="button"
                 >
                   <Check className="w-5 h-5" />
@@ -160,13 +170,19 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
             )}
           </div>
         )}
-
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800 text-center">
-            💡 Tip: Ensure good lighting and the text is clearly visible for best results
-          </p>
-        </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .animate-scan {
+            animation: scan 2s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
