@@ -65,16 +65,16 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
   };
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-8 md:p-10 animate-fade-in-up">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between mb-8 border-b border-slate-100 pb-8">
+    <div className="glass-panel rounded-3xl p-5 sm:p-8 md:p-10 animate-fade-in-up">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between mb-6 sm:mb-8 border-b border-slate-100 pb-6 sm:pb-8">
         <div className="text-center sm:text-left">
-          <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
-            <h2 className="text-3xl font-bold text-slate-900">Analysis Complete</h2>
+          <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Analysis Complete</h2>
             <div className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-600 uppercase tracking-wide">
               Age: {age}
             </div>
           </div>
-          <p className="text-slate-500">
+          <p className="text-sm sm:text-base text-slate-500">
             Here are your personalized health insights
           </p>
         </div>
@@ -87,28 +87,28 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
           >
             <Pencil className="w-5 h-5" />
           </button>
-          <div className={`flex flex-col items-center justify-center h-24 w-24 rounded-2xl ${getHealthBgColor(analysis.healthScore)}`}>
-            <span className="text-4xl font-bold">{analysis.healthScore}</span>
+          <div className={`flex flex-col items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-2xl ${getHealthBgColor(analysis.healthScore)}`}>
+            <span className="text-3xl sm:text-4xl font-bold">{analysis.healthScore}</span>
             <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">Score</span>
           </div>
         </div>
       </div>
 
-      <div className={`${meta.bgClass} ${meta.borderClass} border rounded-2xl p-6 mb-8 shadow-sm relative overflow-hidden`}>
+      <div className={`${meta.bgClass} ${meta.borderClass} border rounded-2xl p-5 sm:p-6 mb-6 sm:mb-8 shadow-sm relative overflow-hidden`}>
         <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-20 rounded-full blur-xl"></div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start relative z-10">
-          <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm ${meta.toneClass}`}>
-            <VerdictIcon className="h-7 w-7" />
+          <div className={`flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm ${meta.toneClass}`}>
+            <VerdictIcon className="h-6 w-6 sm:h-7 sm:w-7" />
           </div>
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h3 className={`text-xl font-bold ${meta.toneClass}`}>{meta.label}</h3>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+              <h3 className={`text-lg sm:text-xl font-bold ${meta.toneClass}`}>{meta.label}</h3>
               <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-white/50 border border-white/20 ${meta.toneClass}`}>
                 {meta.chipText}
               </span>
             </div>
-            <p className="text-slate-700 font-medium mb-3">{meta.description}</p>
+            <p className="text-slate-700 text-sm sm:text-base font-medium mb-3">{meta.description}</p>
             <div className="bg-white/60 rounded-xl p-4 text-sm leading-relaxed text-slate-800 border border-white/40 shadow-sm">
               <span className="font-bold block mb-1 opacity-70 text-xs uppercase tracking-wider">Mom&apos;s Advice</span>
               {analysis.momAdvice || 'Reminder: Be mindful of your choices to maintain energy and well-being.'}
@@ -117,13 +117,13 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
           <span className="bg-slate-100 p-1.5 rounded-lg"><ArrowUpRight className="w-4 h-4 text-slate-600" /></span>
           Summary
         </h3>
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-          <p className="text-slate-700 leading-relaxed text-lg mb-4">
+        <div className="bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-100">
+          <p className="text-slate-700 leading-relaxed text-base sm:text-lg mb-4">
             {analysis.overallHealth}
           </p>
           <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
       </div>
 
       {analysis.ingredients && (
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <h3 className="text-lg font-bold text-slate-900 mb-4">Detected Ingredients</h3>
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <p className="text-slate-600 text-sm font-mono leading-relaxed">{analysis.ingredients}</p>
@@ -151,7 +151,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="grid md:grid-cols-2 gap-6 mb-6 sm:mb-8">
         {analysis.pros && analysis.pros.length > 0 && (
           <div>
             <h3 className="text-lg font-bold text-emerald-700 mb-4 flex items-center gap-2">
@@ -188,7 +188,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
       </div>
 
       {analysis.recommendations && analysis.recommendations.length > 0 && (
-        <div className="mb-10">
+        <div className="mb-8 sm:mb-10">
           <h3 className="text-lg font-bold text-indigo-900 mb-4">Recommendations</h3>
           <div className="grid gap-3">
             {analysis.recommendations.map((rec, index) => (
@@ -196,7 +196,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600 border border-indigo-200">
                   {index + 1}
                 </span>
-                <span className="text-slate-700">{rec}</span>
+                <span className="text-slate-700 text-sm sm:text-base">{rec}</span>
               </div>
             ))}
           </div>
@@ -206,7 +206,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
       <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 border-t border-slate-100">
         <button
           onClick={onAnalyzeAnother}
-          className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
           type="button"
         >
           <RefreshCw className="w-5 h-5" />
