@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Home, History, Menu, X } from 'lucide-react';
+import { Home, History, Camera, Menu, X, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -25,6 +25,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: 'Home', href: '/', icon: Home },
+    { name: 'Analyzer', href: '/analyzer', icon: Camera },  // Added import Camera from 'lucide-react' below
     { name: 'History', href: '/history', icon: History },
   ];
 
@@ -34,15 +35,15 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || mobileMenuOpen
-          ? 'bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm py-3'
-          : 'bg-transparent py-4 sm:py-5'
+          ? 'bg-white/90 backdrop-blur-2xl border-b border-white/30 shadow-xl shadow-white/20 py-3'
+          : 'bg-transparent/80 backdrop-blur-xl py-4 sm:py-5'
           }`}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group relative z-50">
-              <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg shadow-emerald-200/50 transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-300/50 overflow-hidden">
+              <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-2xl shadow-emerald-400/70 transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-500/80 group-hover:-translate-y-0.5 overflow-hidden">
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="text-xl sm:text-2xl relative z-10">🇮🇳</span>
               </div>
@@ -53,7 +54,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-md rounded-full p-1.5 border border-white/40 shadow-sm">
+            <div className="hidden md:flex items-center gap-3 bg-white/80 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl shadow-white/30 backdrop-blur-md">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
@@ -62,8 +63,8 @@ export default function Navbar() {
                     key={item.name}
                     href={item.href}
                     className={`flex items-center gap-2 rounded-full px-5 py-2.5 font-medium transition-all duration-300 ${active
-                      ? 'bg-white text-emerald-700 shadow-md shadow-emerald-100/50'
-                      : 'text-slate-600 hover:bg-white/60 hover:text-emerald-600'
+                      ? 'bg-white/95 backdrop-blur-lg text-emerald-700 shadow-xl shadow-emerald-200/60 scale-105'
+                      : 'text-slate-400 hover:bg-white/90 hover:text-emerald-600 hover:shadow-sm hover:shadow-emerald-50/30 hover:scale-105'
                       }`}
                   >
                     <Icon className={`h-4 w-4 ${active ? 'stroke-[2.5px]' : 'stroke-2'}`} />
@@ -76,7 +77,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden relative z-50 rounded-xl p-2 text-slate-600 bg-white/50 backdrop-blur-md border border-white/40 hover:bg-white hover:text-emerald-600 transition-all shadow-sm active:scale-95"
+              className="md:hidden relative z-50 rounded-2xl p-3 text-slate-400 bg-white/80 backdrop-blur-xl border-transparent hover:bg-white/90 hover:text-emerald-600 transition-all duration-300 shadow-lg shadow-white/40 hover:shadow-xl hover:shadow-emerald-100/50 active:scale-95"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -91,14 +92,14 @@ export default function Navbar() {
 
       {/* Mobile Navigation Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 md:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-40 bg-white/20 backdrop-blur-2xl transition-all duration-500 md:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         onClick={() => setMobileMenuOpen(false)}
       />
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`fixed top-0 left-0 right-0 z-40 bg-white shadow-xl transition-transform duration-300 ease-in-out md:hidden pt-24 pb-6 rounded-b-3xl ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+        className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-2xl shadow-2xl shadow-white/50 transition-transform duration-500 ease-out md:hidden pt-24 pb-8 rounded-b-4xl ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
       >
         <div className="container mx-auto px-4">
@@ -112,11 +113,11 @@ export default function Navbar() {
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-4 rounded-2xl px-5 py-4 font-medium transition-all ${active
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-emerald-600 border border-transparent'
+                    ? 'bg-gradient-to-r from-emerald-50/90 to-cyan-50/90 text-emerald-700 shadow-lg shadow-emerald-200/50'
+                    : 'text-slate-400 hover:bg-white/80 hover:text-emerald-600 border-transparent'
                     }`}
                 >
-                  <div className={`p-2 rounded-xl ${active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                  <div className={`p-2 rounded-xl ${active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-50 text-slate-400'}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                   <span className="text-lg">{item.name}</span>
@@ -125,9 +126,9 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
-            <p className="text-xs font-medium text-slate-400">
-              Made with 💚 for a healthier India
+          <div className="mt-6 pt-6 bg-gradient-to-r from-emerald-500/20 via-transparent to-cyan-500/20 backdrop-blur-2xl rounded-full p-4 shadow-2xl shadow-emerald-500/20 mx-6 text-center flex items-center justify-center gap-2">
+            <p className="text-base font-bold text-white/90 drop-shadow-lg flex items-center gap-1 [&>svg]:h-4 [&>svg]:w-4">
+              Made with <Heart className="text-red-400 fill-red-400" /> for a healthier India
             </p>
           </div>
         </div>
