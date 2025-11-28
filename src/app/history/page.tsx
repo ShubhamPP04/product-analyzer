@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Clock, History, ArrowUpRight, Heart, Ban, AlertTriangle, Trash2, Camera, X, ChevronRight, Calendar } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { History, ArrowUpRight, Heart, Ban, AlertTriangle, Trash2, Camera, X, Calendar, CheckSquare, Square } from 'lucide-react';
+import ComparisonModal from '@/components/ComparisonModal';
 import { ProductHistoryEntry } from '@/types/analysis';
 import Link from 'next/link';
 
@@ -59,7 +61,11 @@ function formatTimestamp(timestamp: string) {
 export default function HistoryPage() {
   const [history, setHistory] = useState<ProductHistoryEntry[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<ProductHistoryEntry | null>(null);
+  const [showCompare, setShowCompare] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const selectedEntries = history.filter(entry => selectedIds.has(entry.id));
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -82,8 +88,21 @@ export default function HistoryPage() {
       localStorage.removeItem(HISTORY_STORAGE_KEY);
       setHistory([]);
       setSelectedEntry(null);
+      setSelectedIds(new Set());
     }
   };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const clearSelection = () => setSelectedIds(new Set());
 
   const deleteEntry = (id: string) => {
     const updatedHistory = history.filter(entry => entry.id !== id);
@@ -108,14 +127,14 @@ export default function HistoryPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-20 animate-fade-in-up">
             <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
-                Your Health <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Journey</span>
+              <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight font-orbitron">
+                Your Health Journey
               </h1>
               <p className="text-slate-600 text-lg max-w-md">
                 Track every scan, analyze your habits, and make better choices over time.
               </p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4 items-center">
               {history.length > 0 && (
                 <button
                   onClick={clearHistory}
@@ -123,6 +142,22 @@ export default function HistoryPage() {
                 >
                   Clear History
                 </button>
+              )}
+              {selectedIds.size > 1 && (
+                <>
+                  <button
+                    onClick={() => setShowCompare(true)}
+                    className="px-6 py-3 rounded-2xl bg-cyan-500/90 text-white font-bold hover:bg-cyan-400 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/25 transition-all font-orbitron tracking-wide"
+                  >
+                    Compare ({selectedIds.size})
+                  </button>
+                  <button
+                    onClick={clearSelection}
+                    className="px-4 py-3 rounded-xl border border-slate-400/50 text-slate-400 hover:bg-slate-900/50 font-exo text-sm"
+                  >
+                    Clear Selection
+                  </button>
+                </>
               )}
               <Link
                 href="/analyzer"
@@ -170,9 +205,30 @@ export default function HistoryPage() {
                       {/* Card */}
                       <div className="w-full md:w-1/2 pl-12 md:pl-0 md:px-12">
                         <div
-                          onClick={() => setSelectedEntry(entry)}
-                          className="bg-white/60 backdrop-blur-xl border border-white/50 p-6 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 cursor-pointer hover:-translate-y-2 group-hover:border-emerald-200/50 relative overflow-hidden"
+                          className="bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 p-6 rounded-3xl shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 cursor-pointer hover:-translate-y-2 relative overflow-hidden flex items-start gap-3 group"
+                          onClick={() => {
+                            if (selectedIds.has(entry.id)) {
+                              toggleSelect(entry.id);
+                            } else {
+                              setSelectedEntry(entry);
+                            }
+                          }}
                         >
+                          {/* Checkbox */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSelect(entry.id);
+                            }}
+                            className="flex-shrink-0 mt-2 p-1 rounded-lg hover:bg-cyan-500/20 transition-colors"
+                          >
+                            {selectedIds.has(entry.id) ? (
+                              <CheckSquare className="w-5 h-5 text-cyan-400" />
+                            ) : (
+                              <Square className="w-5 h-5 text-slate-500/50" />
+                            )}
+                          </button>
                           <div className={`absolute top-0 left-0 w-1.5 h-full ${chip.bgClass.replace('bg-', 'bg-').replace('/80', '-500')}`} />
 
                           <div className="flex items-start justify-between mb-4">
@@ -206,14 +262,25 @@ export default function HistoryPage() {
         </div>
       </main>
 
+      {/* Comparison Modal */}
+      <AnimatePresence>
+        {showCompare && selectedEntries.length >= 2 && (
+          <ComparisonModal
+            entries={history}
+            selected={selectedEntries}
+            onClose={() => setShowCompare(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Detail Modal */}
       {selectedEntry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[49] flex items-center justify-center p-4 sm:p-6">  {/* z-49 to below compare z-50 */}
           <div
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity"
             onClick={() => setSelectedEntry(null)}
           />
-          <div className="relative w-full max-w-2xl bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-fade-in-up">
+          <div className="relative w-full max-w-2xl bg-slate-900/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-fade-in-up glass-panel">
 
             {/* Modal Header */}
             <div className="p-6 sm:p-8 border-b border-slate-100 flex items-start justify-between bg-white/50">
@@ -252,6 +319,15 @@ export default function HistoryPage() {
                   <p className="text-slate-600 font-medium">
                     Age Group: <span className="text-slate-900">{selectedEntry.age} years</span>
                   </p>
+                  {selectedEntry.goals && selectedEntry.goals.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {selectedEntry.goals.map((goal) => (
+                        <span key={goal} className="px-3 py-1 bg-cyan-100 text-cyan-800 text-xs font-bold rounded-full">
+                          {goal.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -311,7 +387,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+            <div id="history-detail" className="p-6 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4">
               <button
                 onClick={() => {
                   deleteEntry(selectedEntry.id);
@@ -322,12 +398,40 @@ export default function HistoryPage() {
                 <Trash2 className="w-4 h-4" />
                 Delete Entry
               </button>
-              <button
-                onClick={() => setSelectedEntry(null)}
-                className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors"
-              >
-                Close
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={async () => {
+                    const element = document.getElementById('history-detail')!;
+                    const canvas = await html2canvas(element.parentElement!, { scale: 2, useCORS: true });
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const imgWidth = 210;
+                    const pageHeight = 295;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    while (heightLeft >= 0) {
+                      position = heightLeft - imgHeight;
+                      pdf.addPage();
+                      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                      heightLeft -= pageHeight;
+                    }
+                    pdf.save(`product-analysis-${selectedEntry.id}.pdf`);
+                  }}
+                  className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-bold py-2 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 text-sm"
+                >
+                  <Download className="w-4 h-4" />
+                  Export PDF
+                </button>
+                <button
+                  onClick={() => setSelectedEntry(null)}
+                  className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,16 +1,23 @@
 'use client';
 
-import { CheckCircle, XCircle, AlertCircle, RefreshCw, Pencil, Heart, Ban, AlertTriangle, ArrowUpRight } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, RefreshCw, Pencil, Heart, Ban, AlertTriangle, ArrowUpRight, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import type { AnalysisData } from '../types/analysis';
+
+import type { NutritionGoal } from '../types/analysis';
 
 interface AnalysisResultProps {
   analysis: AnalysisData;
   age: number;
+  goals: NutritionGoal[];
   onAnalyzeAnother: () => void;
   onEditAge: () => void;
 }
 
-export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
+export default function AnalysisResult({ analysis, age, goals, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
+
+export default function AnalysisResult({ analysis, age, goals, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
   const verdictMeta: Record<AnalysisData['momVerdict'], {
     label: string;
     description: string;
@@ -198,16 +205,42 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
       )}
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 border-t border-slate-100">
-        <button
-          onClick={onAnalyzeAnother}
-          className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
-          type="button"
-        >
-          <RefreshCw className="w-5 h-5" />
-          Analyze Another
-        </button>
-      </div>
-
+          <button
+            onClick={onAnalyzeAnother}
+            className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+            type="button"
+          >
+            <RefreshCw className="w-5 h-5" />
+            Analyze Another
+          </button>
+          <button
+            onClick={async () => {
+              const element = document.getElementById('result-container')!;
+              const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+              const imgData = canvas.toDataURL('image/png');
+              const pdf = new jsPDF('p', 'mm', 'a4');
+              const imgWidth = 210;
+              const pageHeight = 295;
+              const imgHeight = (canvas.height * imgWidth) / canvas.width;
+              let heightLeft = imgHeight;
+              let position = 0;
+              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+              while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+              }
+              pdf.save(`product-analysis-${Date.now()}.pdf`);
+            }}
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+            type="button"
+          >
+            <Download className="w-5 h-5" />
+            Export PDF
+          </button>
+        </div>
       <div className="mt-6 text-center">
         <p className="text-xs text-slate-400">
           AI-generated analysis. Consult a professional for medical advice.
