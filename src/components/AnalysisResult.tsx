@@ -52,12 +52,6 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
   const meta = verdictMeta[analysis.momVerdict] ?? verdictMeta.think_twice;
   const VerdictIcon = meta.icon;
 
-  const getHealthColor = (score: number) => {
-    if (score >= 70) return 'text-emerald-600';
-    if (score >= 40) return 'text-amber-600';
-    return 'text-rose-600';
-  };
-
   const getHealthBgColor = (score: number) => {
     if (score >= 70) return 'bg-emerald-100 text-emerald-800';
     if (score >= 40) return 'bg-amber-100 text-amber-800';

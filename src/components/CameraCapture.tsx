@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
-import { Camera, RefreshCw, ArrowLeft, Check, SwitchCamera, ScanLine } from 'lucide-react';
+import { Camera, RefreshCw, ArrowLeft, Check, SwitchCamera } from 'lucide-react';
 
 interface CameraCaptureProps {
   onCapture: (imageData: string) => void;

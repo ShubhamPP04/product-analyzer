@@ -49,12 +49,12 @@ export default function Navbar() {
               </div>
               <div className="block">
                 <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-tight">Product Analyzer</h1>
-                <p className="text-[10px] sm:text-xs font-medium text-emerald-600 tracking-wide uppercase hidden sm:block">Smart Health Insights</p>
+                <p className="text-[10px] sm:text-xs font-medium text-emerald-600 tracking-wide uppercase">Smart Health Insights</p>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-3 bg-white/80 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl shadow-white/30 backdrop-blur-md">
+            <div className="hidden lg:flex items-center gap-3 bg-white/80 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl shadow-white/30 backdrop-blur-md">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
@@ -74,10 +74,10 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Hidden on desktop */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden relative z-50 rounded-2xl p-3 text-slate-400 bg-white/80 backdrop-blur-xl border-transparent hover:bg-white/90 hover:text-emerald-600 transition-all duration-300 shadow-lg shadow-white/40 hover:shadow-xl hover:shadow-emerald-100/50 active:scale-95"
+              className="relative z-50 rounded-2xl p-3 btn-touch text-slate-400 bg-white/80 backdrop-blur-xl border-transparent hover:bg-white/90 hover:text-emerald-600 transition-all duration-300 shadow-lg shadow-white/40 hover:shadow-xl hover:shadow-emerald-100/50 active:scale-95 block lg:!hidden"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -92,14 +92,14 @@ export default function Navbar() {
 
       {/* Mobile Navigation Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-white/20 backdrop-blur-2xl transition-all duration-500 md:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-40 bg-white/20 backdrop-blur-2xl transition-all duration-500 lg:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         onClick={() => setMobileMenuOpen(false)}
       />
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-2xl shadow-2xl shadow-white/50 transition-transform duration-500 ease-out md:hidden pt-24 pb-8 rounded-b-4xl ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+        className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-2xl shadow-2xl shadow-white/50 transition-transform duration-500 ease-out lg:hidden pt-24 pb-8 rounded-b-4xl ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
       >
         <div className="container mx-auto px-4">

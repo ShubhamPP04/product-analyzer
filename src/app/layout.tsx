@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Product Health Analyzer - India",
   description: "Analyze product ingredients for health insights tailored to your age. Made for India.",
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=no',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
