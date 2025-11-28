@@ -27,7 +27,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
       toneClass: 'text-emerald-700',
       bgClass: 'bg-emerald-50/80',
       borderClass: 'border-emerald-200',
-      chipText: 'Mom Approved',
+      chipText: 'Expert Approved',
     },
     avoid_it: {
       label: 'Not Recommended',
@@ -104,7 +104,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
             </div>
             <p className="text-slate-700 text-sm sm:text-base font-medium mb-3">{meta.description}</p>
             <div className="bg-white/60 rounded-xl p-4 text-sm leading-relaxed text-slate-800 border border-white/40 shadow-sm">
-              <span className="font-bold block mb-1 opacity-70 text-xs uppercase tracking-wider">Mom&apos;s Advice</span>
+              <span className="font-bold block mb-1 opacity-70 text-xs uppercase tracking-wider">Expert&apos;s Advice</span>
               {analysis.momAdvice || 'Reminder: Be mindful of your choices to maintain energy and well-being.'}
             </div>
           </div>

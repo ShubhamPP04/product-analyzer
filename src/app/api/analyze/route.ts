@@ -15,45 +15,44 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Analyzing product image with Gemini AI...');
-    
+
     // Use Gemini's native vision capabilities to extract text and analyze
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 
     // Remove the data URL prefix if present
     const base64Image = image.replace(/^data:image\/\w+;base64,/, '');
 
-    const prompt = `You are an empathetic Indian mother who also happens to be a certified nutrition expert. You're reviewing a food product that your child, aged ${age}, wants to try.
+    const prompt = `You are a professional nutritionist and food scientist. You are reviewing a food product for a person aged ${age}.
 
-Analyze the product ingredients shown in this image for a person aged ${age} years. Speak in warm, everyday language just like a caring Indian mom guiding her child.
+Analyze the product ingredients shown in this image. Provide concise, objective, and scientific guidance.
 
 First, extract and list all the ingredients you can see in the image.
-Then, provide your guidance in the following strict JSON format (no additional narration outside JSON):
+Then, provide your analysis in the following strict JSON format (no additional narration outside JSON):
 
 {
-  "overallHealth": "2-3 sentence summary in a caring motherly tone",
+  "overallHealth": "2-3 sentence objective summary of the product's health profile",
   "healthScore": <number between 0-100>,
   "ageAppropriate": <true/false>,
   "ingredients": "List the main ingredients identified from the image",
-  "pros": ["positive aspect 1", "positive aspect 2", ...],
-  "cons": ["concern 1", "concern 2", ...],
-  "recommendations": ["motherly recommendation 1", "motherly recommendation 2", ...],
-  "momAdvice": "A heartfelt paragraph (3-4 sentences) speaking directly to the child, explaining in simple language whether they should have it, how much, and any conditions",
+  "pros": ["nutritional benefit 1", "nutritional benefit 2", ...],
+  "cons": ["health concern 1", "health concern 2", ...],
+  "recommendations": ["scientific recommendation 1", "scientific recommendation 2", ...],
+  "momAdvice": "A concise, professional verdict (3-4 sentences) explaining whether this product is suitable, citing specific ingredients or nutritional values.",
   "momVerdict": "take_it" | "avoid_it" | "think_twice"
 }
 
-While deciding the momVerdict, consider:
+While deciding the momVerdict (Expert Verdict), consider:
 - Age-appropriateness for ${age} years old
-- Common Indian dietary concerns (e.g., sugar, salt, artificial additives)
-- Nutritional value and portion control
-- Potential allergens or irritants
-- Preservatives and additives
-- Suitability for Indian climate and lifestyle
-- Any health warnings for this age group
+- Nutritional density and ingredient quality
+- Presence of additives, preservatives, or allergens
+- Sugar, salt, and fat content relative to daily recommended limits
+- Suitability for a balanced diet
 
 Tone guidelines:
-- Sound affectionate, protective, and gently persuasive like a real mom.
-- Use simple phrases like “beta” or “dear” sparingly (max once) to keep it natural.
-- Give clear go/no-go guidance in momAdvice and ensure momVerdict aligns with it.
+- Be professional, objective, and concise.
+- Avoid emotional or colloquial language.
+- Focus on facts and nutritional science.
+- Ensure the verdict aligns strictly with the nutritional analysis.
 
 Return ONLY valid JSON, no additional text.`;
 
@@ -66,18 +65,18 @@ Return ONLY valid JSON, no additional text.`;
       },
       { text: prompt }
     ]);
-    
+
     const response = result.response;
     const text = response.text();
-    
+
     console.log('Gemini AI response received');
-    
+
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse AI response');
     }
-    
+
     const analysis = JSON.parse(jsonMatch[0]);
 
     return NextResponse.json(analysis);

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Home, History, Camera, Menu, X, Heart } from 'lucide-react';
 import Link from 'next/link';
+import Logo from './Logo';
 import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
@@ -43,10 +44,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group relative z-50">
-              <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-2xl shadow-emerald-400/70 transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-500/80 group-hover:-translate-y-0.5 overflow-hidden">
-                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="text-xl sm:text-2xl relative z-10">🇮🇳</span>
-              </div>
+              <Logo className="h-10 w-10 sm:h-11 sm:w-11 group-hover:scale-110 transition-transform duration-300" />
               <div className="block">
                 <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-tight">Product Analyzer</h1>
                 <p className="text-[10px] sm:text-xs font-medium text-emerald-600 tracking-wide uppercase">Smart Health Insights</p>
@@ -126,11 +124,7 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="mt-6 pt-6 bg-gradient-to-r from-emerald-500/20 via-transparent to-cyan-500/20 backdrop-blur-2xl rounded-full p-4 shadow-2xl shadow-emerald-500/20 mx-6 text-center flex items-center justify-center gap-2">
-            <p className="text-base font-bold text-white/90 drop-shadow-lg flex items-center gap-1 [&>svg]:h-4 [&>svg]:w-4">
-              Made with <Heart className="text-red-400 fill-red-400" /> for a healthier India
-            </p>
-          </div>
+
         </div>
       </div>
     </>
