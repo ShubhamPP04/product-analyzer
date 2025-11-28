@@ -1,7 +1,8 @@
 'use client';
 
-import { CheckCircle, XCircle, AlertCircle, RefreshCw, Pencil, Heart, Ban, AlertTriangle, ArrowUpRight } from 'lucide-react';
-import type { AnalysisData } from '../types/analysis';
+import { CheckCircle, XCircle, AlertCircle, RefreshCw, Pencil, Heart, Ban, AlertTriangle, ArrowUpRight, Info } from 'lucide-react';
+import type { AnalysisData, Ingredient } from '../types/analysis';
+import { useState } from 'react';
 
 interface AnalysisResultProps {
   analysis: AnalysisData;
@@ -11,6 +12,8 @@ interface AnalysisResultProps {
 }
 
 export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
+  const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
+
   const verdictMeta: Record<AnalysisData['momVerdict'], {
     label: string;
     description: string;
@@ -136,11 +139,83 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         </div>
       </div>
 
+      {analysis.dietaryWarnings && analysis.dietaryWarnings.length > 0 && (
+        <div className="mb-6 sm:mb-8 animate-pulse">
+          <h3 className="text-lg font-bold text-rose-700 mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5" />
+            Dietary Warnings
+          </h3>
+          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 shadow-sm">
+            <ul className="space-y-3">
+              {analysis.dietaryWarnings.map((warning, index) => (
+                <li key={index} className="flex items-start gap-3 text-rose-800 font-bold">
+                  <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-rose-600 shrink-0" />
+                  {warning}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {analysis.ingredients && (
         <div className="mb-6 sm:mb-8">
           <h3 className="text-lg font-bold text-slate-900 mb-4">Detected Ingredients</h3>
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <p className="text-slate-600 text-sm font-mono leading-relaxed">{analysis.ingredients}</p>
+          {typeof analysis.ingredients === 'string' ? (
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+              <p className="text-slate-600 text-sm font-mono leading-relaxed">{analysis.ingredients}</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {analysis.ingredients.map((ing, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setSelectedIngredient(ing);
+                    // Track for Gamification
+                    if (typeof window !== 'undefined') {
+                      const storedStats = localStorage.getItem('product-analyzer-stats');
+                      const stats = storedStats ? JSON.parse(storedStats) : { scanCount: 0, healthyCount: 0, ingredientClicks: 0 };
+                      stats.ingredientClicks += 1;
+                      localStorage.setItem('product-analyzer-stats', JSON.stringify(stats));
+                    }
+                  }}
+                  className={`text-left p-3 rounded-xl border transition-all ${ing.healthImpact === 'negative' ? 'bg-rose-50 border-rose-100 hover:border-rose-200' :
+                    ing.healthImpact === 'positive' ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-200' :
+                      'bg-slate-50 border-slate-100 hover:border-slate-200'
+                    }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-slate-900 text-sm">{ing.name}</span>
+                    <Info className="w-4 h-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500 line-clamp-1">{ing.description}</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Ingredient Detail Modal */}
+      {selectedIngredient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSelectedIngredient(null)}>
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-fade-in-up" onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-xl font-bold text-slate-900">{selectedIngredient.name}</h3>
+              <button onClick={() => setSelectedIngredient(null)} className="p-1 rounded-full hover:bg-slate-100">
+                <XCircle className="w-6 h-6 text-slate-400" />
+              </button>
+            </div>
+            <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase mb-4 ${selectedIngredient.healthImpact === 'negative' ? 'bg-rose-100 text-rose-700' :
+              selectedIngredient.healthImpact === 'positive' ? 'bg-emerald-100 text-emerald-700' :
+                'bg-slate-100 text-slate-700'
+              }`}>
+              {selectedIngredient.healthImpact} Impact
+            </div>
+            <p className="text-slate-600 leading-relaxed">
+              {selectedIngredient.description}
+            </p>
           </div>
         </div>
       )}
@@ -205,6 +280,26 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         >
           <RefreshCw className="w-5 h-5" />
           Analyze Another
+        </button>
+
+        <button
+          onClick={() => {
+            const text = `Product Analysis for Age ${age}:\n\nScore: ${analysis.healthScore}/100\nVerdict: ${meta.label}\n\n${analysis.overallHealth}\n\nCheck it out on Product Analyzer!`;
+            if (navigator.share) {
+              navigator.share({
+                title: 'Product Health Analysis',
+                text: text,
+              }).catch(console.error);
+            } else {
+              navigator.clipboard.writeText(text);
+              alert('Analysis copied to clipboard!');
+            }
+          }}
+          className="flex items-center justify-center gap-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-share-2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /><line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></svg>
+          Share Result
         </button>
       </div>
 

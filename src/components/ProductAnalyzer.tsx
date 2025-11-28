@@ -5,6 +5,7 @@ import AgeInput from './AgeInput';
 import CameraCapture from './CameraCapture';
 import AnalysisResult from './AnalysisResult';
 import { AnalysisData, ProductHistoryEntry } from '../types/analysis';
+import DietarySettings, { DietaryPreference } from './DietarySettings';
 
 type Step = 'age' | 'camera' | 'result';
 
@@ -33,6 +34,9 @@ export default function ProductAnalyzer() {
   const [editingAge, setEditingAge] = useState(false);
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const [dietaryPreferences, setDietaryPreferences] = useState<string[]>([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -40,6 +44,15 @@ export default function ProductAnalyzer() {
     if (storedAge) {
       setAge(storedAge);
       setStep('camera');
+    }
+
+    const storedPrefs = localStorage.getItem('product-analyzer-dietary-prefs');
+    if (storedPrefs) {
+      try {
+        setDietaryPreferences(JSON.parse(storedPrefs));
+      } catch (e) {
+        console.error('Failed to parse dietary preferences', e);
+      }
     }
   }, []);
 
@@ -94,7 +107,14 @@ export default function ProductAnalyzer() {
     setStep('camera');
   };
 
-  const handleImageCapture = async (imageData: string) => {
+  const handleSavePreferences = (prefs: string[]) => {
+    setDietaryPreferences(prefs);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('product-analyzer-dietary-prefs', JSON.stringify(prefs));
+    }
+  };
+
+  const handleImageCapture = async (captureData: string) => {
     if (!age) {
       alert('Please set your age before analyzing a product.');
       setStep('age');
@@ -105,15 +125,19 @@ export default function ProductAnalyzer() {
     startProgress();
 
     try {
+      const isText = captureData.startsWith('TEXT:');
+      const payload = {
+        age,
+        dietaryPreferences,
+        [isText ? 'text' : 'image']: isText ? captureData.substring(5) : captureData,
+      };
+
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          image: imageData,
-          age,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -130,6 +154,15 @@ export default function ProductAnalyzer() {
         const history = storedHistory ? JSON.parse(storedHistory) : [];
         const updated = [entry, ...history].slice(0, 12);
         persistHistory(updated);
+
+        // Update User Stats for Gamification
+        const storedStats = localStorage.getItem('product-analyzer-stats');
+        const stats = storedStats ? JSON.parse(storedStats) : { scanCount: 0, healthyCount: 0, ingredientClicks: 0 };
+        stats.scanCount += 1;
+        if (data.momVerdict === 'take_it') {
+          stats.healthyCount += 1;
+        }
+        localStorage.setItem('product-analyzer-stats', JSON.stringify(stats));
       }
     } catch (error) {
       console.error('Error analyzing product:', error);
@@ -163,6 +196,26 @@ export default function ProductAnalyzer() {
 
   return (
     <div className="w-full">
+      {/* Settings Button (Visible in Camera Step) */}
+      {step === 'camera' && !loading && (
+        <div className="absolute top-4 left-4 z-20">
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/30 transition-all"
+            title="Dietary Preferences"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings-2"><path d="M20 7h-9" /><path d="M14 17H5" /><circle cx="17" cy="17" r="3" /><circle cx="7" cy="7" r="3" /></svg>
+          </button>
+        </div>
+      )}
+
+      <DietarySettings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        preferences={dietaryPreferences as DietaryPreference[]}
+        onSave={(prefs) => handleSavePreferences(prefs)}
+      />
+
       {step === 'age' && (
         <AgeInput
           onSubmit={handleAgeSubmit}

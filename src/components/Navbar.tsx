@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Home, History, Camera, Menu, X, Heart } from 'lucide-react';
+import { Home, History, Camera, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Logo from './Logo';
 import { usePathname } from 'next/navigation';

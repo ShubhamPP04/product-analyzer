@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { Clock, History, ArrowUpRight, Heart, Ban, AlertTriangle, Trash2, Camera, X, ChevronRight, Calendar } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { History, ArrowUpRight, Heart, Ban, AlertTriangle, Trash2, Camera, X, Calendar, Download } from 'lucide-react';
 import { ProductHistoryEntry } from '@/types/analysis';
 import Link from 'next/link';
+import Achievements from '@/components/Achievements';
 
 const HISTORY_STORAGE_KEY = 'product-analyzer-history';
 
@@ -94,6 +95,17 @@ export default function HistoryPage() {
     }
   };
 
+  const handleExport = () => {
+    if (history.length === 0) return;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(history, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "product-analysis-history.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   return (
     <div className="relative min-h-screen bg-[#f8fafc] overflow-x-hidden">
       {/* Dynamic Background */}
@@ -117,22 +129,36 @@ export default function HistoryPage() {
             </div>
             <div className="flex gap-4">
               {history.length > 0 && (
-                <button
-                  onClick={clearHistory}
-                  className="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all active:scale-95"
-                >
-                  Clear History
-                </button>
+                <>
+                  <button
+                    onClick={handleExport}
+                    className="px-4 py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95 flex items-center gap-2"
+                    title="Export Data"
+                  >
+                    <Download className="w-5 h-5" />
+                    <span className="hidden sm:inline">Export</span>
+                  </button>
+                  <button
+                    onClick={clearHistory}
+                    className="px-4 py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all active:scale-95 flex items-center gap-2"
+                    title="Clear History"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                    <span className="hidden sm:inline">Clear</span>
+                  </button>
+                </>
               )}
               <Link
                 href="/analyzer"
-                className="px-8 py-3 rounded-2xl bg-slate-900 text-white font-bold shadow-xl hover:bg-slate-800 hover:scale-105 transition-all active:scale-95 flex items-center gap-2"
+                className="px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold shadow-xl hover:bg-slate-800 hover:scale-105 transition-all active:scale-95 flex items-center gap-2"
               >
                 <Camera className="w-5 h-5" />
-                Scan New
+                <span className="hidden sm:inline">Scan New</span>
               </Link>
             </div>
           </div>
+
+          <Achievements />
 
           {/* Timeline */}
           {history.length === 0 && isLoaded ? (
@@ -302,9 +328,20 @@ export default function HistoryPage() {
                 {selectedEntry.analysis.ingredients && (
                   <div>
                     <h3 className="font-bold text-slate-900 mb-4">Detected Ingredients</h3>
-                    <div className="bg-slate-50 rounded-2xl p-4 text-sm text-slate-600 font-mono border border-slate-100">
-                      {selectedEntry.analysis.ingredients}
-                    </div>
+                    {typeof selectedEntry.analysis.ingredients === 'string' ? (
+                      <div className="bg-slate-50 rounded-2xl p-4 text-sm text-slate-600 font-mono border border-slate-100">
+                        {selectedEntry.analysis.ingredients}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {selectedEntry.analysis.ingredients.map((ing, idx) => (
+                          <div key={idx} className="p-3 rounded-xl border bg-slate-50 border-slate-100">
+                            <div className="font-bold text-slate-900 text-sm mb-1">{ing.name}</div>
+                            <p className="text-xs text-slate-500 line-clamp-2">{ing.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
