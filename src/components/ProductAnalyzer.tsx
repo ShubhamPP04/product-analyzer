@@ -165,8 +165,6 @@ export default function ProductAnalyzer() {
     setStep('age');
   };
 
-  import type { NutritionGoal } from '../types/analysis';
-
   const handleCancelAgeEdit = () => {
     setEditingAge(false);
     if (analysis) {
