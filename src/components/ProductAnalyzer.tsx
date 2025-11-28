@@ -4,17 +4,19 @@ import { useEffect, useRef, useState } from 'react';
 import AgeInput from './AgeInput';
 import CameraCapture from './CameraCapture';
 import AnalysisResult from './AnalysisResult';
-import { AnalysisData, ProductHistoryEntry } from '../types/analysis';
+import { AnalysisData, ProductHistoryEntry, NutritionGoal } from '../types/analysis';
 
 type Step = 'age' | 'camera' | 'result';
 
 const AGE_STORAGE_KEY = 'product-analyzer-age';
+const GOALS_STORAGE_KEY = 'product-analyzer-goals';
 const HISTORY_STORAGE_KEY = 'product-analyzer-history';
 
-const createHistoryEntry = (age: number, analysis: AnalysisData): ProductHistoryEntry => ({
+const createHistoryEntry = (age: number, goals: NutritionGoal[], analysis: AnalysisData): ProductHistoryEntry => ({
   id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
   analyzedAt: new Date().toISOString(),
   age,
+  goals,
   analysis,
 });
 
@@ -27,6 +29,7 @@ const loadNumber = (value: string | null) => {
 export default function ProductAnalyzer() {
   const [step, setStep] = useState<Step>('age');
   const [age, setAge] = useState<number | null>(null);
+  const [goals, setGoals] = useState<NutritionGoal[]>([]);
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -37,8 +40,12 @@ export default function ProductAnalyzer() {
     if (typeof window === 'undefined') return;
 
     const storedAge = loadNumber(localStorage.getItem(AGE_STORAGE_KEY));
+    const storedGoals = localStorage.getItem(GOALS_STORAGE_KEY);
     if (storedAge) {
       setAge(storedAge);
+      if (storedGoals) {
+        setGoals(JSON.parse(storedGoals) as NutritionGoal[]);
+      }
       setStep('camera');
     }
   }, []);
@@ -81,14 +88,21 @@ export default function ProductAnalyzer() {
     localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(entries));
   };
 
+  const persistGoals = (value: NutritionGoal[]) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(value));
+  };
+
   const persistAge = (value: number) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(AGE_STORAGE_KEY, String(value));
   };
 
-  const handleAgeSubmit = (userAge: number) => {
+  const handleAgeSubmit = (userAge: number, userGoals: NutritionGoal[]) => {
     setAge(userAge);
+    setGoals(userGoals);
     persistAge(userAge);
+    persistGoals(userGoals);
     setEditingAge(false);
     setAnalysis(null);
     setStep('camera');
@@ -113,6 +127,7 @@ export default function ProductAnalyzer() {
         body: JSON.stringify({
           image: imageData,
           age,
+          goals,
         }),
       });
 
@@ -124,7 +139,7 @@ export default function ProductAnalyzer() {
       setAnalysis(data);
       setStep('result');
 
-      const entry = createHistoryEntry(age, data);
+      const entry = createHistoryEntry(age, goals, data);
       if (typeof window !== 'undefined') {
         const storedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
         const history = storedHistory ? JSON.parse(storedHistory) : [];
@@ -150,6 +165,8 @@ export default function ProductAnalyzer() {
     setStep('age');
   };
 
+  import type { NutritionGoal } from '../types/analysis';
+
   const handleCancelAgeEdit = () => {
     setEditingAge(false);
     if (analysis) {
@@ -167,6 +184,7 @@ export default function ProductAnalyzer() {
         <AgeInput
           onSubmit={handleAgeSubmit}
           initialAge={age}
+          initialGoals={goals}
           onCancel={editingAge ? handleCancelAgeEdit : undefined}
         />
       )}
@@ -187,6 +205,7 @@ export default function ProductAnalyzer() {
         <AnalysisResult
           analysis={analysis}
           age={age}
+          goals={goals}
           onAnalyzeAnother={handleAnalyzeAnother}
           onEditAge={handleEditAge}
         />

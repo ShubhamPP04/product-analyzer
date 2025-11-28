@@ -3,14 +3,19 @@
 import { useEffect, useState } from 'react';
 import { User, X, ArrowRight } from 'lucide-react';
 
+import GoalsProfile from './GoalsProfile';
+import type { NutritionGoal } from '@/types/analysis';
+
 interface AgeInputProps {
-  onSubmit: (age: number) => void;
+  onSubmit: (age: number, goals: NutritionGoal[]) => void;
   initialAge?: number | null;
+  initialGoals?: NutritionGoal[];
   onCancel?: () => void;
 }
 
-export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeInputProps) {
+export default function AgeInput({ onSubmit, initialAge = null, initialGoals = [], onCancel }: AgeInputProps) {
   const [age, setAge] = useState('');
+  const [goals, setGoals] = useState<NutritionGoal[]>(initialGoals);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -29,7 +34,7 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
     }
 
     setError('');
-    onSubmit(ageNum);
+    onSubmit(ageNum, goals);
   };
 
   return (
@@ -87,19 +92,21 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
           )}
         </div>
 
+        <GoalsProfile goals={goals} onChange={setGoals} />
+
         <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
           <button
             type="submit"
-            className="w-full group flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 hover:-translate-y-0.5 active:scale-95"
+            className="w-full group flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-orange-400 hover:from-cyan-600 hover:to-orange-500 text-white text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl font-orbitron tracking-wide transition-all duration-300 shadow-lg shadow-cyan-300/50 hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-0.5 active:scale-95"
           >
-            {initialAge ? 'Save Changes' : 'Continue'}
+            {initialAge ? 'Save Profile' : 'Continue'}
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="w-full border-2 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-200 active:scale-95"
+              className="w-full border-2 border-slate-600/50 text-slate-400 hover:text-slate-200 hover:border-cyan-400/50 hover:bg-slate-900/50 backdrop-blur-sm text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl font-exo transition-all duration-200 active:scale-95"
             >
               Cancel
             </button>

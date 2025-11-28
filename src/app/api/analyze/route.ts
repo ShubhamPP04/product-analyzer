@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '
 
 export async function POST(request: NextRequest) {
   try {
-    const { image, age } = await request.json();
+    const { image, age, goals = [] } = await request.json();
 
     if (!image || !age) {
       return NextResponse.json(
@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
     // Remove the data URL prefix if present
     const base64Image = image.replace(/^data:image\/\w+;base64,/, '');
 
+    const goalsStr = goals.length > 0 ? `User nutrition goals: ${goals.join(', ')}. Prioritize analysis based on these goals.` : '';
     const prompt = `You are a professional nutritionist and food scientist. You are reviewing a food product for a person aged ${age}.
+
+${goalsStr}
 
 Analyze the product ingredients shown in this image. Provide concise, objective, and scientific guidance.
 

@@ -1,6 +1,21 @@
+@import '@fontsource/orbitron/400.css';
+@import '@fontsource/orbitron/700.css';
+@import '@fontsource/orbitron/900.css';
+@import '@fontsource/exo-2/400.css';
+@import '@fontsource/exo-2/500.css';
+@import '@fontsource/exo-2/600.css';
 @import "tailwindcss/preflight" layer(base);
 @import "tailwindcss/utilities" layer(utilities);
 @import "tailwindcss/theme" layer(theme);
+
+@layer base {
+  :root {
+    --bio-bg: #0a0f14;
+    --bio-fg: #f1f5f9;
+    --bio-accent: #00f5ff;
+    --bio-warn: #ff9500;
+  }
+}
 
 @layer theme {
   :root {
@@ -41,12 +56,34 @@
 
   body {
     min-height: 100vh;
-    font-family: var(--font-sans);
-    background-color: #f8fafc; /* Slate 50 */
-    color: #0f172a; /* Slate 900 */
+    font-family: var(--font-sans), var(--font-exo);
+    background: linear-gradient(135deg, var(--bio-bg) 0%, #11151a 50%, var(--bio-bg) 100%);
+    color: var(--bio-fg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 149, 0, 0.08) 0%, transparent 50%),
+      linear-gradient(45deg, transparent 49%, rgba(0, 245, 255, 0.02) 50%, transparent 51%);
+    pointer-events: none;
+    z-index: -1;
+    animation: vein-pulse 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes vein-pulse {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.6; }
   }
 
   ::selection {
@@ -57,7 +94,17 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl;
+    @apply bg-slate-900/20 backdrop-blur-xl border border-cyan-500/30 shadow-2xl bg-gradient-to-br from-slate-900/30 to-transparent;
+  }
+
+  .bio-vein {
+    filter: url(#vein-glow);
+    stroke-dasharray: 0 1000;
+    animation: vein-dash 3s linear infinite;
+  }
+
+  @keyframes vein-dash {
+    to { stroke-dashoffset: -1000; }
   }
   
   .text-gradient {

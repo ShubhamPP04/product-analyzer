@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Orbitron, Exo_2 } from '@fontsource/orbitron'; // Wait, fontsource is CSS import, not Next font
+// Actually, for fontsource, import in globals.css or use @import
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
