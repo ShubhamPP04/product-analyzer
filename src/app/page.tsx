@@ -249,7 +249,7 @@ export default function Home() {
                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100/20 to-cyan-100/20 rounded-full blur-2xl -translate-y-8 translate-x-8" />
 
                      {/* Quote mark */}
-                     <div className="absolute top-4 left-4 text-6xl text-emerald-200/60 font-serif leading-none">"</div>
+                      <div className="absolute top-4 left-4 text-6xl text-emerald-200/60 font-serif leading-none">&quot;</div>
 
                      {/* Content */}
                      <div className="relative z-10">
