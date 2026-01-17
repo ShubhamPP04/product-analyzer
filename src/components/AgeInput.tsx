@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, X, ArrowRight } from 'lucide-react';
+import { User, X, ArrowRight, Shield } from 'lucide-react';
 
 interface AgeInputProps {
   onSubmit: (age: number) => void;
@@ -33,11 +33,11 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
   };
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-12 max-w-2xl mx-auto animate-fade-in-up">
+    <div className="relative bg-white rounded-3xl p-6 sm:p-12 max-w-2xl mx-auto shadow-xl border border-slate-200 animate-fade-up">
       {onCancel && (
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition border border-slate-200"
           type="button"
         >
           <X className="w-6 h-6" />
@@ -45,10 +45,10 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
       )}
 
       <div className="text-center mb-8 sm:mb-10">
-        <div className="inline-flex justify-center items-center h-16 w-16 sm:h-20 sm:w-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-cyan-600 shadow-lg shadow-emerald-200/50 mb-4 sm:mb-6">
+        <div className="inline-flex justify-center items-center h-16 w-16 sm:h-20 sm:w-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-200 mb-4 sm:mb-6">
           <User className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3">
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2 sm:mb-3">
           {initialAge ? 'Update Your Age' : 'Tell us about yourself'}
         </h2>
         <p className="text-base sm:text-lg text-slate-600">
@@ -69,7 +69,7 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
               id="age"
               value={age}
               onChange={(e) => setAge(e.target.value)}
-              className="w-full px-6 py-4 sm:py-5 text-2xl sm:text-3xl font-bold text-slate-900 bg-white border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-slate-300"
+              className="w-full px-6 py-4 sm:py-5 text-2xl sm:text-3xl font-bold text-slate-800 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 focus:bg-white transition-all placeholder:text-slate-300"
               placeholder="e.g. 25"
               min="1"
               max="120"
@@ -80,8 +80,8 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
             </div>
           </div>
           {error && (
-            <p className="mt-3 text-rose-600 text-sm font-medium flex items-center gap-2 animate-fade-in-up">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-rose-600" />
+            <p className="mt-3 text-rose-600 text-sm font-medium flex items-center gap-2 animate-fade-up">
+              <span className="inline-block h-2 w-2 rounded-full bg-rose-600" />
               {error}
             </p>
           )}
@@ -90,7 +90,7 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
         <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
           <button
             type="submit"
-            className="w-full group flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 hover:-translate-y-0.5 active:scale-95"
+            className="w-full group flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:-translate-y-0.5 active:scale-95"
           >
             {initialAge ? 'Save Changes' : 'Continue'}
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -99,7 +99,7 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
             <button
               type="button"
               onClick={onCancel}
-              className="w-full border-2 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-200 active:scale-95"
+              className="w-full border-2 border-slate-200 text-slate-600 hover:text-slate-800 hover:border-slate-300 hover:bg-slate-50 text-lg font-bold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-200 active:scale-95"
             >
               Cancel
             </button>
@@ -108,9 +108,9 @@ export default function AgeInput({ onSubmit, initialAge = null, onCancel }: AgeI
       </form>
 
       <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-400">
-        <span className="h-3 w-3 rounded-full bg-emerald-500/20 flex items-center justify-center">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-        </span>
+        <div className="p-1.5 rounded-full bg-emerald-100">
+          <Shield className="h-3 w-3 text-emerald-600" />
+        </div>
         Your data is stored locally on your device
       </div>
     </div>

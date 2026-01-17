@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Camera, History, Shield, Heart, Zap, Scan, Search, CheckCircle, Lock, Star } from "lucide-react";
+import { ArrowRight, Camera, History, Shield, Heart, Zap, Scan, Search, CheckCircle, Lock, Star, Sparkles, Play, ChevronRight, Users, TrendingUp, Globe } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import FeatureCard from "@/components/FeatureCard";
@@ -10,32 +10,34 @@ import Logo from "@/components/Logo";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    const interval = setInterval(() => {
+      setActiveTestimonial((prev) => (prev + 1) % 3);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const features = [
     {
       icon: Shield,
       title: "Deep Ingredient Scan",
-      description: "AI reveals hidden sugars, additives, allergens instantly."
+      description: "AI reveals hidden sugars, additives, and allergens instantly with detailed breakdown.",
+      accentColor: 'emerald' as const
     },
     {
       icon: Heart,
       title: "Age-Personalized Score",
-      description: "Custom health rating for Indian diets & your age."
+      description: "Custom health rating tailored for Indian diets and your specific age group.",
+      accentColor: 'cyan' as const
     },
     {
       icon: Zap,
       title: "Instant Verdict",
-      description: "Take/avoid/think advice with actionable swaps."
+      description: "Get take/avoid/think advice with actionable healthier swap suggestions.",
+      accentColor: 'violet' as const
     }
   ];
 
@@ -50,7 +52,7 @@ export default function Home() {
       number: 2,
       icon: Search,
       title: "AI Analysis",
-      description: "Our advanced AI decodes ingredients and nutritional values instantly."
+      description: "Advanced AI decodes ingredients and nutritional values instantly."
     },
     {
       number: 3,
@@ -79,121 +81,229 @@ export default function Home() {
     }
   ];
 
-  const cursorStyle = {
-    left: `${mousePos.x}px`,
-    top: `${mousePos.y}px`
-  };
+  const testimonials = [
+    { name: "Priya S.", role: "Nutritionist", text: "Finally an app that understands Indian ingredients! It's been a game changer for my clients.", avatar: "P" },
+    { name: "Rahul M.", role: "Fitness Coach", text: "The age-personalized scoring is brilliant. It helps me tailor advice for different age groups instantly.", avatar: "R" },
+    { name: "Anjali K.", role: "Mother of two", text: "I use this every time I go grocery shopping. It's so reassuring to know what's really in the packet.", avatar: "A" }
+  ];
+
+  const stats = [
+    { value: "50K+", label: "Products Scanned", icon: Scan },
+    { value: "10K+", label: "Active Users", icon: Users },
+    { value: "98%", label: "Accuracy Rate", icon: TrendingUp },
+    { value: "100+", label: "Indian Brands", icon: Globe }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-cyan-50 overflow-hidden relative">
-       {/* Custom Cursor */}
-       <div
-         className="fixed w-2 h-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full z-50 mix-blend-difference pointer-events-none transition-all duration-300 opacity-60 blur-sm scale-150 cursor-follow"
-         style={cursorStyle}
-       />
+    <div className="min-h-screen bg-gradient-hero overflow-hidden relative">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-[100px] animate-blob" />
+        <div className="absolute top-[30%] left-[-10%] w-[400px] h-[400px] bg-cyan-100/40 rounded-full blur-[80px] animate-blob delay-1000" />
+        <div className="absolute bottom-[-10%] right-[20%] w-[600px] h-[600px] bg-violet-100/30 rounded-full blur-[120px] animate-blob delay-500" />
+      </div>
 
-      <main className="relative pt-24 sm:pt-32 pb-20 sm:pb-24">
-        {/* Dynamic Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-200/20 rounded-[60%] rotate-12 pulse-slow" />
-          <div className="absolute top-1/2 right-[-20%] w-[70vh] h-[70vh] bg-cyan-200/20 rounded-[40%] -rotate-6 pulse delay-2000" />
-          <div className="absolute -bottom-40 left-1/4 w-80 h-80 bg-gradient-to-br from-teal-200/30 to-emerald-300/20 rounded-full blur-3xl float" />
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-tl from-rose-200/20 to-cyan-200/20 rounded-[50%] blur-xl spin-slow" />
-        </div>
+      {/* Dot pattern */}
+      <div className="fixed inset-0 bg-dot-pattern opacity-40 pointer-events-none -z-10" />
 
-        <div className="container mx-auto px-6 lg:px-12 relative z-10">
-          <div className={`max-w-7xl mx-auto transition-all duration-[1200ms] cubic-bezier(0.23,1,0.32,1) ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
-
-            {/* Badge */}
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-12 lg:mb-16 -skew-x-3 lg:hover:skew-x-0 transition-transform duration-500 group">
-              <div className="bg-gradient-to-r from-emerald-500/90 to-cyan-500/90 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/30 shadow-2xl shadow-emerald-500/20 -skew-x-3 group-hover:skew-x-0">
-                <span className="text-sm font-bold text-white drop-shadow-lg tracking-wide flex items-center gap-2">
-                  <div className="w-2 h-2 bg-white/80 rounded-full ping-slow" />
-                  AI Health Scanner • India-First
-                </span>
+      <main className="relative pt-28 sm:pt-36 pb-20">
+        <div className="container mx-auto px-6 lg:px-12">
+          {/* Hero Section */}
+          <section className={`max-w-7xl mx-auto mb-32 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Badges */}
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-sm font-semibold text-emerald-700">AI-Powered</span>
+              </div>
+              <div className="px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm">
+                <span className="text-sm font-medium text-slate-600">Made for India</span>
               </div>
             </div>
 
-            {/* Hero */}
-            <div className="mb-24 lg:mb-32">
-              <div className="relative">
-                <h1 className="text-[5rem] lg:text-[9rem] xl:text-[10rem] font-black tracking-[-0.05em] text-slate-900 leading-[0.85] mb-8 -skew-y-3 hover:skew-y-0 transition-all duration-700 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 bg-clip-text text-transparent drop-shadow-2xl">
-                  Scan.
+            {/* Main Hero Content */}
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-8">
+                  <span className="text-slate-800">Scan.</span>
                   <br />
-                  <span className="text-transparent bg-gradient-to-r from-emerald-600 via-cyan-500 to-emerald-400 bg-clip-text drop-shadow-3xl -skew-x-6 inline-block">
-                    Know.
-                  </span>
+                  <span className="text-gradient">Decode.</span>
                   <br />
-                  Thrive.
+                  <span className="text-slate-800">Thrive.</span>
                 </h1>
-                <div className="absolute -top-4 -right-4 w-32 h-32 bg-gradient-to-br from-emerald-400/30 to-cyan-400/30 rounded-full blur-3xl spin-slow -z-10" />
-              </div>
-              <p className="text-xl lg:text-2xl font-light text-slate-600/90 max-w-2xl leading-relaxed tracking-wide mb-12 opacity-90 drop-shadow-sm">
-                Camera-powered AI analyzes labels instantly. Get age-tailored verdicts, ingredients decoded,
-                and smart swaps for Indian kitchens.
-              </p>
 
-              {/* CTAs */}
-              <div className="flex flex-col lg:flex-row gap-6 mb-16 items-stretch lg:items-center">
-                 <Link
-                   href="/analyzer"
-                   className="group relative flex-1 lg:flex-none bg-gradient-to-b from-emerald-500 to-emerald-600 text-white font-bold text-base px-12 py-4 rounded-full shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-600/40 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-                 >
-                  <div className="absolute inset-0 bg-white/10 -skew-y-6 rotate-1 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-100 group-hover:rotate-0 transition-all duration-700" />
-                  <div className="relative flex items-center gap-4">
-                    <Camera className="h-8 w-8 drop-shadow-lg group-hover:scale-110 transition-transform" />
-                    <span>Scan Now</span>
-                    <ArrowRight className="h-6 w-6 ml-auto group-hover:translate-x-2 transition-transform" />
+                <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-xl">
+                  Camera-powered AI that analyzes food labels instantly. Get age-tailored health verdicts, decoded ingredients, and smart swaps for Indian kitchens.
+                </p>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link
+                    href="/analyzer"
+                    className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:scale-105 transition-all duration-300"
+                  >
+                    <Camera className="w-6 h-6" />
+                    <span>Start Scanning</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+
+                  <Link
+                    href="/history"
+                    className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg bg-white border border-slate-200 text-slate-700 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 shadow-sm hover:shadow-md transition-all duration-300"
+                  >
+                    <History className="w-5 h-5" />
+                    <span>View History</span>
+                  </Link>
+                </div>
+
+                {/* Quick stats */}
+                <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-slate-200">
+                  {stats.slice(0, 3).map((stat, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 flex items-center justify-center">
+                        <stat.icon className="w-6 h-6 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-slate-800">{stat.value}</p>
+                        <p className="text-sm text-slate-500">{stat.label}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Hero Visual */}
+              <div className="relative hidden lg:block">
+                <div className="relative w-full aspect-square max-w-lg mx-auto">
+                  {/* Decorative rings */}
+                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-emerald-200 animate-spin-slow" />
+                  <div className="absolute inset-8 rounded-full border-2 border-dashed border-cyan-200 animate-spin-slow" style={{ animationDirection: 'reverse' }} />
+                  
+                  {/* Main card */}
+                  <div className="absolute inset-16 bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 overflow-hidden">
+                    {/* Scanner line */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-shimmer" />
+                    
+                    {/* Content */}
+                    <div className="h-full flex flex-col">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-3 h-3 rounded-full bg-red-400" />
+                        <div className="w-3 h-3 rounded-full bg-amber-400" />
+                        <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                      </div>
+
+                      <div className="flex-1 flex flex-col justify-center items-center">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg">
+                          <CheckCircle className="w-10 h-10 text-white" />
+                        </div>
+                        <p className="text-lg font-bold text-slate-800 mb-1">Health Score</p>
+                        <p className="text-4xl font-black text-gradient-emerald">85/100</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 mt-4">
+                        {['Low Sugar', 'No Additives'].map((tag, i) => (
+                          <div key={i} className="px-3 py-2 rounded-lg bg-emerald-50 text-center border border-emerald-100">
+                            <span className="text-xs font-medium text-emerald-700">{tag}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </Link>
-                 <Link
-                   href="/history"
-                   className="group flex-1 lg:flex-none justify-center items-center gap-3 bg-white/80 rounded-full px-12 py-4 font-bold text-base text-slate-800 shadow-lg shadow-slate-200/40 hover:shadow-xl hover:shadow-emerald-300/20 hover:text-emerald-600 border border-slate-200/40 hover:border-emerald-300/40 transition-all duration-300 hover:-translate-y-1"
-                 >
-                  <History className="h-7 w-7 opacity-80 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
-                  Past Scans
-                </Link>
+
+                  {/* Floating cards */}
+                  <div className="absolute top-4 right-0 p-4 bg-white rounded-2xl shadow-xl border border-slate-100 animate-float">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500">Status</p>
+                        <p className="text-sm font-bold text-slate-800">Safe to eat</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-4 left-0 p-4 bg-white rounded-2xl shadow-xl border border-slate-100 animate-float-delayed">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
+                        <Zap className="w-5 h-5 text-cyan-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500">Analysis</p>
+                        <p className="text-sm font-bold text-slate-800">0.3s</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </section>
 
-            {/* Features */}
-            <div className="mb-32">
-              <h2 className="text-3xl lg:text-5xl font-black text-slate-900 mb-16 text-center tracking-tight">
-                Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Product Analyzer?</span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 h-fit">
-                {features.map((feature, index) => (
-                  <FeatureCard key={index} {...feature} />
-                ))}
+          {/* Features Section */}
+          <section className="mb-32">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+                <span className="text-sm font-semibold text-emerald-700">Powerful Features</span>
               </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-800 mb-4">
+                Why Choose <span className="text-gradient">Product Analyzer?</span>
+              </h2>
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                Advanced AI technology meets intuitive design to give you the healthiest food choices.
+              </p>
             </div>
 
-            {/* How It Works */}
-            <div className="mb-32">
-              <h2 className="text-3xl lg:text-5xl font-black text-slate-900 mb-16 text-center tracking-tight">
-                How It <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Works</span>
-              </h2>
-              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12">
-                {/* Connecting Line (Desktop) */}
-                <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-emerald-200 via-cyan-200 to-emerald-200 border-t-2 border-dashed border-emerald-300/50 -z-10" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {features.map((feature, index) => (
+                <FeatureCard key={index} {...feature} />
+              ))}
+            </div>
+          </section>
 
+          {/* How It Works Section */}
+          <section className="mb-32">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 border border-cyan-100 mb-6">
+                <Play className="w-4 h-4 text-cyan-600" />
+                <span className="text-sm font-semibold text-cyan-700">Simple Process</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-800 mb-4">
+                How It <span className="text-gradient">Works</span>
+              </h2>
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                Three simple steps to make healthier food choices every day.
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* Desktop connecting line */}
+              <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-emerald-200 via-cyan-200 to-violet-200" />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                 {steps.map((step, index) => (
                   <StepCard key={index} {...step} />
                 ))}
               </div>
             </div>
+          </section>
 
-            {/* Trust & Privacy */}
-            <div className="mb-32 bg-white/40 backdrop-blur-xl rounded-[3rem] p-8 lg:p-16 border border-white/50 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3" />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Trust & Privacy Section */}
+          <section className="mb-32">
+            <div className="relative bg-white rounded-3xl p-8 lg:p-16 shadow-xl border border-slate-100 overflow-hidden">
+              {/* Background decorations */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-50 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
+
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100/50 text-emerald-700 font-bold text-sm mb-6">
-                    <Lock className="w-4 h-4" /> Privacy First
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 font-semibold text-sm mb-6">
+                    <Lock className="w-4 h-4" />
+                    Privacy First
                   </div>
-                  <h2 className="text-3xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight">
-                    Your Health Data <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Stays Yours.</span>
+                  <h2 className="text-4xl lg:text-5xl font-black text-slate-800 mb-6">
+                    Your Health Data<br />
+                    <span className="text-gradient">Stays Yours.</span>
                   </h2>
                   <p className="text-lg text-slate-600 leading-relaxed mb-8">
                     We believe in privacy by design. Your food scans are processed locally whenever possible, and we never sell your personal health data to third parties.
@@ -204,126 +314,150 @@ export default function Home() {
                       "No hidden tracking",
                       "Transparent algorithms"
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-slate-700 font-medium">
-                        <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <li key={i} className="flex items-center gap-4 text-slate-700">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-md">
                           <CheckCircle className="w-4 h-4 text-white" />
                         </div>
-                        {item}
+                        <span className="font-medium">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="relative">
-                  <div className="aspect-square rounded-3xl bg-gradient-to-br from-slate-100 to-white shadow-2xl border border-white/50 flex items-center justify-center p-8">
-                    <Shield className="w-32 h-32 text-emerald-500 drop-shadow-2xl" />
+
+                <div className="relative flex justify-center">
+                  <div className="relative w-64 h-64">
+                    {/* Animated rings */}
+                    <div className="absolute inset-0 rounded-full border-2 border-emerald-200 animate-pulse" />
+                    <div className="absolute inset-6 rounded-full border-2 border-cyan-200 animate-pulse delay-300" />
+                    <div className="absolute inset-12 rounded-full border-2 border-violet-200 animate-pulse delay-500" />
+                    
+                    <div className="absolute inset-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-xl">
+                      <Shield className="w-12 h-12 text-white" />
+                    </div>
                   </div>
-                  {/* Floating Elements */}
-                  <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-emerald-100 animate-float">
+
+                  {/* Floating badge */}
+                  <div className="absolute -bottom-4 left-4 p-4 bg-white rounded-2xl shadow-xl border border-slate-100 animate-float">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Lock className="w-5 h-5 text-green-600" />
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                        <Lock className="w-5 h-5 text-emerald-600" />
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 font-semibold">Security</p>
-                        <p className="text-sm font-bold text-slate-900">Enterprise Grade</p>
+                        <p className="text-xs text-slate-500">Security</p>
+                        <p className="text-sm font-bold text-slate-800">Enterprise Grade</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </section>
 
-            {/* Testimonials */}
-            <div className="mb-32">
-              <h2 className="text-3xl lg:text-5xl font-black text-slate-900 mb-16 text-center tracking-tight">
-                Loved by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Health Enthusiasts</span>
+          {/* Testimonials Section */}
+          <section className="mb-32">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-100 mb-6">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="text-sm font-semibold text-amber-700">Testimonials</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-800 mb-4">
+                Loved by <span className="text-gradient">Health Enthusiasts</span>
               </h2>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                 {[
-                   { name: "Priya S.", role: "Nutritionist", text: "Finally an app that understands Indian ingredients! It's been a game changer for my clients." },
-                   { name: "Rahul M.", role: "Fitness Coach", text: "The age-personalized scoring is brilliant. It helps me tailor advice for different age groups instantly." },
-                   { name: "Anjali K.", role: "Mother of two", text: "I use this every time I go grocery shopping. It's so reassuring to know what's really in the packet." }
-                 ].map((testimonial, i) => (
-                   <div key={i} className="group relative bg-gradient-to-br from-white via-emerald-50/30 to-cyan-50/30 p-8 rounded-2xl border border-emerald-100/50 shadow-lg hover:shadow-2xl hover:shadow-emerald-200/30 transition-all duration-500 hover:-translate-y-2 overflow-hidden">
-                     {/* Subtle background pattern */}
-                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100/20 to-cyan-100/20 rounded-full blur-2xl -translate-y-8 translate-x-8" />
-
-                     {/* Quote mark */}
-                      <div className="absolute top-4 left-4 text-6xl text-emerald-200/60 font-serif leading-none">&quot;</div>
-
-                     {/* Content */}
-                     <div className="relative z-10">
-                       <p className="text-slate-700 mb-8 leading-relaxed text-lg pl-8">&ldquo;{testimonial.text}&rdquo;</p>
-
-                       {/* User info */}
-                       <div className="flex items-center gap-4">
-                         <div className="relative">
-                           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 via-cyan-400 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                             {testimonial.name[0]}
-                           </div>
-                           {/* Subtle glow */}
-                           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 opacity-20 blur-md scale-110" />
-                         </div>
-                         <div>
-                           <p className="font-bold text-slate-900 text-lg">{testimonial.name}</p>
-                           <p className="text-sm text-emerald-600 font-medium">{testimonial.role}</p>
-                         </div>
-                       </div>
-
-                       {/* Rating stars */}
-                       <div className="flex gap-1 mt-4 justify-end">
-                         {[1, 2, 3, 4, 5].map((star) => (
-                           <Star key={star} className="w-4 h-4 text-amber-400 fill-amber-400 drop-shadow-sm" />
-                         ))}
-                       </div>
-                     </div>
-                   </div>
-                 ))}
-               </div>
             </div>
 
-            {/* FAQ */}
-            <div className="mb-32">
-              <h2 className="text-3xl lg:text-5xl font-black text-slate-900 mb-16 text-center tracking-tight">
-                Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Questions</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((testimonial, i) => (
+                <div 
+                  key={i} 
+                  className={`group relative bg-white p-8 rounded-2xl shadow-lg border transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
+                    i === activeTestimonial ? 'border-emerald-200 shadow-emerald-100' : 'border-slate-100'
+                  }`}
+                >
+                  {/* Quote mark */}
+                  <div className="absolute top-6 left-6 text-6xl text-emerald-100 font-serif leading-none">&ldquo;</div>
+                  
+                  <div className="relative z-10">
+                    <p className="text-slate-600 mb-8 leading-relaxed text-lg pl-8">
+                      &ldquo;{testimonial.text}&rdquo;
+                    </p>
+
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        {testimonial.avatar}
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-800 text-lg">{testimonial.name}</p>
+                        <p className="text-sm text-emerald-600 font-medium">{testimonial.role}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-1 mt-4 justify-end">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* FAQ Section */}
+          <section className="mb-32">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-50 border border-violet-100 mb-6">
+                <Sparkles className="w-4 h-4 text-violet-600" />
+                <span className="text-sm font-semibold text-violet-700">Got Questions?</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-800 mb-4">
+                Frequently Asked <span className="text-gradient">Questions</span>
               </h2>
-              <Accordion items={faqs} />
             </div>
 
-            {/* Final CTA */}
-            <div className="text-center mb-24">
-              <h2 className="text-4xl lg:text-6xl font-black text-slate-900 mb-8 tracking-tight">
-                Ready to Eat <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">Smarter?</span>
-              </h2>
-              <p className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto">
-                Join thousands of users making better food choices every day.
-              </p>
-              <Link
-                href="/analyzer"
-                className="inline-flex items-center gap-3 bg-slate-900 text-white font-bold text-xl px-12 py-6 rounded-full hover:bg-slate-800 hover:scale-105 transition-all shadow-2xl shadow-slate-900/30"
-              >
-                Start Scanning Now <ArrowRight className="w-6 h-6" />
-              </Link>
-            </div>
+            <Accordion items={faqs} />
+          </section>
 
-          </div>
+          {/* Final CTA Section */}
+          <section className="text-center mb-24">
+            <div className="relative bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-12 lg:p-20 overflow-hidden shadow-2xl">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6">
+                  Ready to Eat Smarter?
+                </h2>
+                <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                  Join thousands of users making better food choices every day.
+                </p>
+                <Link
+                  href="/analyzer"
+                  className="group inline-flex items-center justify-center gap-3 px-10 py-5 rounded-2xl font-bold text-xl bg-white text-emerald-600 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                >
+                  <span>Start Scanning Now</span>
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
 
-      <footer className="relative py-16 bg-gradient-to-t from-slate-50/50 to-transparent backdrop-blur-xl border-t border-white/30 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <div className="container mx-auto px-6 lg:px-12 relative z-10">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-8 text-center lg:text-left">
+      {/* Footer */}
+      <footer className="relative py-12 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-4">
-              <Logo className="w-14 h-14" />
+              <Logo className="w-12 h-12" />
               <div>
-                <h4 className="text-xl font-bold text-slate-900 mb-1">Product Analyzer</h4>
-                <p className="text-emerald-600 font-semibold">Scan Smart, Eat Healthy</p>
+                <h4 className="text-xl font-bold text-slate-800">Product Analyzer</h4>
+                <p className="text-emerald-600 text-sm font-medium">Scan Smart, Eat Healthy</p>
               </div>
             </div>
             <div className="flex gap-8 text-sm font-medium">
-              <Link href="/privacy" className="text-slate-600 hover:text-emerald-600 transition-all hover:underline underline-offset-4">Privacy</Link>
-              <Link href="/terms" className="text-slate-600 hover:text-emerald-600 transition-all hover:underline underline-offset-4">Terms</Link>
+              <Link href="/privacy" className="text-slate-500 hover:text-emerald-600 transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-slate-500 hover:text-emerald-600 transition-colors">Terms</Link>
             </div>
           </div>
         </div>

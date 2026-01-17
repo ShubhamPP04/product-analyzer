@@ -1,6 +1,6 @@
 'use client';
 
-import { Trophy, Star, Search, Zap, Lock } from 'lucide-react';
+import { Trophy, Star, Search, Zap, Lock, Award } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export interface Achievement {
@@ -88,17 +88,23 @@ export default function Achievements() {
     }, []);
 
     return (
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/50 shadow-lg mb-12">
-            <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-amber-100 rounded-2xl text-amber-600">
-                    <Trophy className="w-6 h-6" />
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg mb-12">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-lg shadow-amber-200">
+                    <Trophy className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Achievements</h2>
+                    <h2 className="text-2xl font-bold text-slate-800">Achievements</h2>
                     <p className="text-slate-500 text-sm">Unlock badges as you scan</p>
+                </div>
+                <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100">
+                    <Award className="w-4 h-4 text-amber-600" />
+                    <span className="text-sm font-bold text-amber-700">{unlocked.length}/{ACHIEVEMENTS.length}</span>
                 </div>
             </div>
 
+            {/* Achievement Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {ACHIEVEMENTS.map((achievement) => {
                     const isUnlocked = unlocked.includes(achievement.id);
@@ -107,18 +113,20 @@ export default function Achievements() {
                     return (
                         <div
                             key={achievement.id}
-                            className={`relative p-4 rounded-2xl border transition-all duration-300 ${isUnlocked
-                                ? 'bg-gradient-to-br from-white to-amber-50 border-amber-200 shadow-md'
-                                : 'bg-slate-50 border-slate-100 opacity-70 grayscale'
+                            className={`relative p-5 rounded-2xl border-2 transition-all duration-300 ${isUnlocked
+                                ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 shadow-md hover:shadow-lg hover:-translate-y-1'
+                                : 'bg-slate-50 border-slate-100 opacity-60'
                                 }`}
                         >
                             <div className="flex items-start gap-4">
-                                <div className={`p-3 rounded-xl ${isUnlocked ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-400'
+                                <div className={`p-3 rounded-xl ${isUnlocked 
+                                    ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md' 
+                                    : 'bg-slate-200 text-slate-400'
                                     }`}>
                                     {isUnlocked ? <Icon className="w-6 h-6" /> : <Lock className="w-6 h-6" />}
                                 </div>
-                                <div>
-                                    <h3 className={`font-bold ${isUnlocked ? 'text-slate-900' : 'text-slate-500'}`}>
+                                <div className="flex-1">
+                                    <h3 className={`font-bold ${isUnlocked ? 'text-slate-800' : 'text-slate-500'}`}>
                                         {achievement.title}
                                     </h3>
                                     <p className="text-xs text-slate-500 mt-1 leading-relaxed">
@@ -126,9 +134,16 @@ export default function Achievements() {
                                     </p>
                                 </div>
                             </div>
+                            
+                            {/* Unlocked indicator */}
                             {isUnlocked && (
-                                <div className="absolute top-2 right-2">
-                                    <Star className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
+                                <div className="absolute top-3 right-3">
+                                    <div className="relative">
+                                        <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                                        <div className="absolute inset-0 animate-ping">
+                                            <Star className="w-5 h-5 text-amber-400 fill-amber-400 opacity-50" />
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
