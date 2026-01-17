@@ -1,8 +1,22 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
-import Webcam from 'react-webcam';
+import { useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { Camera, RefreshCw, ArrowLeft, Check, SwitchCamera, Type, Scan } from 'lucide-react';
+
+// Lazy load Webcam component - major performance improvement
+const LazyWebcam = lazy(() => import('react-webcam'));
+
+function WebcamWithFallback(props: any) {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-full bg-slate-800 flex items-center justify-center">
+        <div className="animate-pulse text-white/60">Loading camera...</div>
+      </div>
+    }>
+      <LazyWebcam {...props} />
+    </Suspense>
+  );
+}
 
 interface CameraCaptureProps {
   onCapture: (imageData: string) => void;
@@ -12,7 +26,7 @@ interface CameraCaptureProps {
 }
 
 export default function CameraCapture({ onCapture, loading, progress, onBack }: CameraCaptureProps) {
-  const webcamRef = useRef<Webcam>(null);
+  const webcamRef = useRef<any>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
@@ -24,13 +38,13 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
     if (imageSrc) {
       setImgSrc(imageSrc);
     }
-  }, [webcamRef]);
+  }, []);
 
-  const retake = () => {
+  const retake = useCallback(() => {
     setImgSrc(null);
-  };
+  }, []);
 
-  const confirmCapture = () => {
+  const confirmCapture = useCallback(() => {
     if (isTextMode) {
       if (textInput.trim().length > 0) {
         onCapture(`TEXT:${textInput}`);
@@ -38,15 +52,23 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
     } else if (imgSrc) {
       onCapture(imgSrc);
     }
-  };
+  }, [isTextMode, textInput, imgSrc, onCapture]);
 
-  const handleUserMediaError = () => {
+  const handleUserMediaError = useCallback(() => {
     setCameraError(true);
-  };
+  }, []);
 
-  const switchCamera = () => {
+  const switchCamera = useCallback(() => {
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
-  };
+  }, []);
+
+  const toggleTextMode = useCallback(() => {
+    setIsTextMode(prev => !prev);
+  }, []);
+
+  const handleTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTextInput(e.target.value);
+  }, []);
 
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 shadow-xl border border-slate-200 animate-fade-up">
@@ -71,7 +93,7 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
           </h2>
         </div>
         <button
-          onClick={() => setIsTextMode(!isTextMode)}
+          onClick={toggleTextMode}
           className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition px-3 py-2 rounded-xl hover:bg-emerald-50"
           disabled={loading}
         >
@@ -87,7 +109,7 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
             </label>
             <textarea
               value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
+              onChange={handleTextChange}
               placeholder="e.g., Sugar, Water, Palm Oil, Wheat Flour..."
               className="w-full flex-1 p-4 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 outline-none resize-none text-slate-700 placeholder:text-slate-400 bg-white"
             />
@@ -104,7 +126,7 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
                   Please allow camera access in your browser settings to scan products.
                 </p>
                 <button
-                  onClick={() => setIsTextMode(true)}
+                  onClick={toggleTextMode}
                   className="text-emerald-700 font-bold underline hover:text-emerald-800"
                 >
                   Or type ingredients manually
@@ -114,7 +136,7 @@ export default function CameraCapture({ onCapture, loading, progress, onBack }: 
               <div className="relative overflow-hidden rounded-2xl bg-slate-900 shadow-2xl aspect-[3/4] sm:aspect-[4/3] border border-slate-200">
                 {!imgSrc ? (
                   <>
-                    <Webcam
+                    <WebcamWithFallback
                       ref={webcamRef}
                       audio={false}
                       screenshotFormat="image/jpeg"

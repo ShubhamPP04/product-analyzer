@@ -1,7 +1,5 @@
-'use client';
-
+import React, { memo } from 'react';
 import { LucideIcon } from 'lucide-react';
-import { useState } from 'react';
 
 interface FeatureCardProps {
     icon: LucideIcon;
@@ -10,46 +8,40 @@ interface FeatureCardProps {
     accentColor?: 'emerald' | 'cyan' | 'violet';
 }
 
-export default function FeatureCard({ 
+const colors = {
+    emerald: {
+        gradient: 'from-emerald-500 to-teal-500',
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-600',
+        border: 'border-emerald-100',
+        shadow: 'hover:shadow-emerald-100/50'
+    },
+    cyan: {
+        gradient: 'from-cyan-500 to-blue-500',
+        bg: 'bg-cyan-50',
+        text: 'text-cyan-600',
+        border: 'border-cyan-100',
+        shadow: 'hover:shadow-cyan-100/50'
+    },
+    violet: {
+        gradient: 'from-violet-500 to-purple-500',
+        bg: 'bg-violet-50',
+        text: 'text-violet-600',
+        border: 'border-violet-100',
+        shadow: 'hover:shadow-violet-100/50'
+    }
+};
+
+function FeatureCard({ 
     icon: Icon, 
     title, 
     description, 
     accentColor = 'emerald' 
 }: FeatureCardProps) {
-    const [isHovered, setIsHovered] = useState(false);
-
-    const colors = {
-        emerald: {
-            gradient: 'from-emerald-500 to-teal-500',
-            bg: 'bg-emerald-50',
-            text: 'text-emerald-600',
-            border: 'border-emerald-100',
-            shadow: 'hover:shadow-emerald-100/50'
-        },
-        cyan: {
-            gradient: 'from-cyan-500 to-blue-500',
-            bg: 'bg-cyan-50',
-            text: 'text-cyan-600',
-            border: 'border-cyan-100',
-            shadow: 'hover:shadow-cyan-100/50'
-        },
-        violet: {
-            gradient: 'from-violet-500 to-purple-500',
-            bg: 'bg-violet-50',
-            text: 'text-violet-600',
-            border: 'border-violet-100',
-            shadow: 'hover:shadow-violet-100/50'
-        }
-    };
-
     const c = colors[accentColor];
 
     return (
-        <div
-            className={`relative group cursor-pointer h-full`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className="relative group cursor-pointer h-full">
             <div className={`relative h-full p-8 rounded-3xl bg-white border ${c.border} transition-all duration-500 hover:shadow-2xl ${c.shadow} hover:-translate-y-2`}>
                 {/* Subtle gradient overlay on hover */}
                 <div className={`absolute inset-0 rounded-3xl ${c.bg} opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
@@ -81,3 +73,5 @@ export default function FeatureCard({
         </div>
     );
 }
+
+export default memo(FeatureCard);

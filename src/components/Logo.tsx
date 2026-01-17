@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface LogoProps {
     className?: string;
 }
 
-export default function Logo({ className = "w-10 h-10" }: LogoProps) {
+function Logo({ className = "w-10 h-10" }: LogoProps) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,3 +27,5 @@ export default function Logo({ className = "w-10 h-10" }: LogoProps) {
         </svg>
     );
 }
+
+export default memo(Logo);

@@ -2,7 +2,7 @@
 
 import { CheckCircle, XCircle, AlertCircle, RefreshCw, Pencil, Heart, Ban, AlertTriangle, ArrowUpRight, Info, Share2 } from 'lucide-react';
 import type { AnalysisData, Ingredient } from '../types/analysis';
-import { useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 
 interface AnalysisResultProps {
   analysis: AnalysisData;
@@ -11,55 +11,90 @@ interface AnalysisResultProps {
   onEditAge: () => void;
 }
 
-export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
+// Move static data outside component
+const VERDICT_META: Record<AnalysisData['momVerdict'], {
+  label: string;
+  description: string;
+  icon: typeof Heart;
+  toneClass: string;
+  bgClass: string;
+  borderClass: string;
+  chipText: string;
+}> = {
+  take_it: {
+    label: 'Recommended',
+    description: 'Enjoy this product mindfully and keep portions balanced.',
+    icon: Heart,
+    toneClass: 'text-emerald-700',
+    bgClass: 'bg-emerald-50',
+    borderClass: 'border-emerald-200',
+    chipText: 'Expert Approved',
+  },
+  avoid_it: {
+    label: 'Not Recommended',
+    description: 'Consider a healthier alternative.',
+    icon: Ban,
+    toneClass: 'text-rose-700',
+    bgClass: 'bg-rose-50',
+    borderClass: 'border-rose-200',
+    chipText: 'Avoid It',
+  },
+  think_twice: {
+    label: 'Consider with Caution',
+    description: 'Consume occasionally and with balanced portions.',
+    icon: AlertTriangle,
+    toneClass: 'text-amber-700',
+    bgClass: 'bg-amber-50',
+    borderClass: 'border-amber-200',
+    chipText: 'Caution',
+  },
+};
+
+const getHealthBgColor = (score: number) => {
+  if (score >= 70) return 'bg-emerald-100 text-emerald-800';
+  if (score >= 40) return 'bg-amber-100 text-amber-800';
+  return 'bg-rose-100 text-rose-800';
+};
+
+const STATS_STORAGE_KEY = 'product-analyzer-stats';
+
+function AnalysisResult({ analysis, age, onAnalyzeAnother, onEditAge }: AnalysisResultProps) {
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
 
-  const verdictMeta: Record<AnalysisData['momVerdict'], {
-    label: string;
-    description: string;
-    icon: typeof Heart;
-    toneClass: string;
-    bgClass: string;
-    borderClass: string;
-    chipText: string;
-  }> = {
-    take_it: {
-      label: 'Recommended',
-      description: 'Enjoy this product mindfully and keep portions balanced.',
-      icon: Heart,
-      toneClass: 'text-emerald-700',
-      bgClass: 'bg-emerald-50',
-      borderClass: 'border-emerald-200',
-      chipText: 'Expert Approved',
-    },
-    avoid_it: {
-      label: 'Not Recommended',
-      description: 'Consider a healthier alternative.',
-      icon: Ban,
-      toneClass: 'text-rose-700',
-      bgClass: 'bg-rose-50',
-      borderClass: 'border-rose-200',
-      chipText: 'Avoid It',
-    },
-    think_twice: {
-      label: 'Consider with Caution',
-      description: 'Consume occasionally and with balanced portions.',
-      icon: AlertTriangle,
-      toneClass: 'text-amber-700',
-      bgClass: 'bg-amber-50',
-      borderClass: 'border-amber-200',
-      chipText: 'Caution',
-    },
-  };
-
-  const meta = verdictMeta[analysis.momVerdict] ?? verdictMeta.think_twice;
+  const meta = useMemo(() => VERDICT_META[analysis.momVerdict] ?? VERDICT_META.think_twice, [analysis.momVerdict]);
   const VerdictIcon = meta.icon;
+  const healthBgColor = useMemo(() => getHealthBgColor(analysis.healthScore), [analysis.healthScore]);
 
-  const getHealthBgColor = (score: number) => {
-    if (score >= 70) return 'bg-emerald-100 text-emerald-800';
-    if (score >= 40) return 'bg-amber-100 text-amber-800';
-    return 'bg-rose-100 text-rose-800';
-  };
+  const handleIngredientClick = useCallback((ing: Ingredient) => {
+    setSelectedIngredient(ing);
+    if (typeof window !== 'undefined') {
+      try {
+        const storedStats = localStorage.getItem(STATS_STORAGE_KEY);
+        const stats = storedStats ? JSON.parse(storedStats) : { scanCount: 0, healthyCount: 0, ingredientClicks: 0 };
+        stats.ingredientClicks += 1;
+        localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
+      } catch (e) {
+        // Ignore localStorage errors
+      }
+    }
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setSelectedIngredient(null);
+  }, []);
+
+  const handleShare = useCallback(() => {
+    const text = `Product Analysis for Age ${age}:\n\nScore: ${analysis.healthScore}/100\nVerdict: ${meta.label}\n\n${analysis.overallHealth}\n\nCheck it out on Product Analyzer!`;
+    if (navigator.share) {
+      navigator.share({
+        title: 'Product Health Analysis',
+        text: text,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(text);
+      alert('Analysis copied to clipboard!');
+    }
+  }, [age, analysis.healthScore, analysis.overallHealth, meta.label]);
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-8 md:p-10 shadow-xl border border-slate-200 animate-fade-up">
@@ -85,7 +120,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
           >
             <Pencil className="w-5 h-5" />
           </button>
-          <div className={`flex flex-col items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-2xl ${getHealthBgColor(analysis.healthScore)} shadow-lg`}>
+          <div className={`flex flex-col items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-2xl ${healthBgColor} shadow-lg`}>
             <span className="text-3xl sm:text-4xl font-bold">{analysis.healthScore}</span>
             <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">Score</span>
           </div>
@@ -175,15 +210,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
               {analysis.ingredients.map((ing, idx) => (
                 <button
                   key={idx}
-                  onClick={() => {
-                    setSelectedIngredient(ing);
-                    if (typeof window !== 'undefined') {
-                      const storedStats = localStorage.getItem('product-analyzer-stats');
-                      const stats = storedStats ? JSON.parse(storedStats) : { scanCount: 0, healthyCount: 0, ingredientClicks: 0 };
-                      stats.ingredientClicks += 1;
-                      localStorage.setItem('product-analyzer-stats', JSON.stringify(stats));
-                    }
-                  }}
+                  onClick={() => handleIngredientClick(ing)}
                   className={`text-left p-4 rounded-xl border-2 transition-all hover:shadow-md ${ing.healthImpact === 'negative' ? 'bg-rose-50 border-rose-200 hover:border-rose-300' :
                     ing.healthImpact === 'positive' ? 'bg-emerald-50 border-emerald-200 hover:border-emerald-300' :
                       'bg-slate-50 border-slate-200 hover:border-slate-300'
@@ -203,11 +230,11 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
 
       {/* Ingredient Detail Modal */}
       {selectedIngredient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-sm" onClick={() => setSelectedIngredient(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-sm" onClick={closeModal}>
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 animate-scale-in" onClick={e => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
               <h3 className="text-xl font-bold text-slate-800">{selectedIngredient.name}</h3>
-              <button onClick={() => setSelectedIngredient(null)} className="p-1.5 rounded-full hover:bg-slate-100 border border-slate-200">
+              <button onClick={closeModal} className="p-1.5 rounded-full hover:bg-slate-100 border border-slate-200">
                 <XCircle className="w-5 h-5 text-slate-400" />
               </button>
             </div>
@@ -290,18 +317,7 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
         </button>
 
         <button
-          onClick={() => {
-            const text = `Product Analysis for Age ${age}:\n\nScore: ${analysis.healthScore}/100\nVerdict: ${meta.label}\n\n${analysis.overallHealth}\n\nCheck it out on Product Analyzer!`;
-            if (navigator.share) {
-              navigator.share({
-                title: 'Product Health Analysis',
-                text: text,
-              }).catch(console.error);
-            } else {
-              navigator.clipboard.writeText(text);
-              alert('Analysis copied to clipboard!');
-            }
-          }}
+          onClick={handleShare}
           className="flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 font-bold py-4 px-8 rounded-2xl transition duration-200 shadow-sm hover:shadow-md active:scale-95"
           type="button"
         >
@@ -318,3 +334,5 @@ export default function AnalysisResult({ analysis, age, onAnalyzeAnother, onEdit
     </div>
   );
 }
+
+export default memo(AnalysisResult);

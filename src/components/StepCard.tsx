@@ -1,5 +1,4 @@
-'use client';
-
+import React, { memo } from 'react';
 import { LucideIcon } from 'lucide-react';
 
 interface StepCardProps {
@@ -9,14 +8,14 @@ interface StepCardProps {
     description: string;
 }
 
-export default function StepCard({ number, icon: Icon, title, description }: StepCardProps) {
-    const stepColors = [
-        { gradient: 'from-emerald-500 to-teal-500', bg: 'bg-emerald-50', text: 'text-emerald-600' },
-        { gradient: 'from-cyan-500 to-blue-500', bg: 'bg-cyan-50', text: 'text-cyan-600' },
-        { gradient: 'from-violet-500 to-purple-500', bg: 'bg-violet-50', text: 'text-violet-600' }
-    ];
-    
-    const colors = stepColors[(number - 1) % stepColors.length];
+const STEP_COLORS = [
+    { gradient: 'from-emerald-500 to-teal-500', bg: 'bg-emerald-50', text: 'text-emerald-600' },
+    { gradient: 'from-cyan-500 to-blue-500', bg: 'bg-cyan-50', text: 'text-cyan-600' },
+    { gradient: 'from-violet-500 to-purple-500', bg: 'bg-violet-50', text: 'text-violet-600' }
+];
+
+function StepCard({ number, icon: Icon, title, description }: StepCardProps) {
+    const colors = STEP_COLORS[(number - 1) % STEP_COLORS.length];
 
     return (
         <div className="relative flex flex-col items-center text-center group">
@@ -51,3 +50,5 @@ export default function StepCard({ number, icon: Icon, title, description }: Ste
         </div>
     );
 }
+
+export default memo(StepCard);

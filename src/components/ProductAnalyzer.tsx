@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import AgeInput from './AgeInput';
 import CameraCapture from './CameraCapture';
 import AnalysisResult from './AnalysisResult';
@@ -11,6 +11,8 @@ type Step = 'age' | 'camera' | 'result';
 
 const AGE_STORAGE_KEY = 'product-analyzer-age';
 const HISTORY_STORAGE_KEY = 'product-analyzer-history';
+const PREFS_STORAGE_KEY = 'product-analyzer-dietary-prefs';
+const STATS_STORAGE_KEY = 'product-analyzer-stats';
 
 const createHistoryEntry = (age: number, analysis: AnalysisData): ProductHistoryEntry => ({
   id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
@@ -46,7 +48,7 @@ export default function ProductAnalyzer() {
       setStep('camera');
     }
 
-    const storedPrefs = localStorage.getItem('product-analyzer-dietary-prefs');
+    const storedPrefs = localStorage.getItem(PREFS_STORAGE_KEY);
     if (storedPrefs) {
       try {
         setDietaryPreferences(JSON.parse(storedPrefs));
@@ -64,7 +66,7 @@ export default function ProductAnalyzer() {
     };
   }, []);
 
-  const startProgress = () => {
+  const startProgress = useCallback(() => {
     if (progressTimerRef.current) {
       clearInterval(progressTimerRef.current);
     }
@@ -76,9 +78,9 @@ export default function ProductAnalyzer() {
         return Math.min(next, 95);
       });
     }, 350);
-  };
+  }, []);
 
-  const finishProgress = () => {
+  const finishProgress = useCallback(() => {
     if (progressTimerRef.current) {
       clearInterval(progressTimerRef.current);
       progressTimerRef.current = null;
@@ -87,34 +89,34 @@ export default function ProductAnalyzer() {
     setTimeout(() => {
       setProgress(0);
     }, 400);
-  };
+  }, []);
 
-  const persistHistory = (entries: ProductHistoryEntry[]) => {
+  const persistHistory = useCallback((entries: ProductHistoryEntry[]) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(entries));
-  };
+  }, []);
 
-  const persistAge = (value: number) => {
+  const persistAge = useCallback((value: number) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(AGE_STORAGE_KEY, String(value));
-  };
+  }, []);
 
-  const handleAgeSubmit = (userAge: number) => {
+  const handleAgeSubmit = useCallback((userAge: number) => {
     setAge(userAge);
     persistAge(userAge);
     setEditingAge(false);
     setAnalysis(null);
     setStep('camera');
-  };
+  }, [persistAge]);
 
-  const handleSavePreferences = (prefs: string[]) => {
+  const handleSavePreferences = useCallback((prefs: string[]) => {
     setDietaryPreferences(prefs);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('product-analyzer-dietary-prefs', JSON.stringify(prefs));
+      localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(prefs));
     }
-  };
+  }, []);
 
-  const handleImageCapture = async (captureData: string) => {
+  const handleImageCapture = useCallback(async (captureData: string) => {
     if (!age) {
       alert('Please set your age before analyzing a product.');
       setStep('age');
@@ -156,13 +158,13 @@ export default function ProductAnalyzer() {
         persistHistory(updated);
 
         // Update User Stats for Gamification
-        const storedStats = localStorage.getItem('product-analyzer-stats');
+        const storedStats = localStorage.getItem(STATS_STORAGE_KEY);
         const stats = storedStats ? JSON.parse(storedStats) : { scanCount: 0, healthyCount: 0, ingredientClicks: 0 };
         stats.scanCount += 1;
         if (data.momVerdict === 'take_it') {
           stats.healthyCount += 1;
         }
-        localStorage.setItem('product-analyzer-stats', JSON.stringify(stats));
+        localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
       }
     } catch (error) {
       console.error('Error analyzing product:', error);
@@ -171,19 +173,19 @@ export default function ProductAnalyzer() {
       finishProgress();
       setLoading(false);
     }
-  };
+  }, [age, dietaryPreferences, startProgress, finishProgress, persistHistory]);
 
-  const handleAnalyzeAnother = () => {
+  const handleAnalyzeAnother = useCallback(() => {
     setAnalysis(null);
     setStep('camera');
-  };
+  }, []);
 
-  const handleEditAge = () => {
+  const handleEditAge = useCallback(() => {
     setEditingAge(true);
     setStep('age');
-  };
+  }, []);
 
-  const handleCancelAgeEdit = () => {
+  const handleCancelAgeEdit = useCallback(() => {
     setEditingAge(false);
     if (analysis) {
       setStep('result');
@@ -192,7 +194,20 @@ export default function ProductAnalyzer() {
     } else {
       setStep('age');
     }
-  };
+  }, [analysis, age]);
+
+  const openSettings = useCallback(() => {
+    setIsSettingsOpen(true);
+  }, []);
+
+  const closeSettings = useCallback(() => {
+    setIsSettingsOpen(false);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setEditingAge(true);
+    setStep('age');
+  }, []);
 
   return (
     <div className="w-full">
@@ -200,7 +215,7 @@ export default function ProductAnalyzer() {
       {step === 'camera' && !loading && (
         <div className="absolute top-4 left-4 z-20">
           <button
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={openSettings}
             className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/30 transition-all"
             title="Dietary Preferences"
           >
@@ -211,9 +226,9 @@ export default function ProductAnalyzer() {
 
       <DietarySettings
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onClose={closeSettings}
         preferences={dietaryPreferences as DietaryPreference[]}
-        onSave={(prefs) => handleSavePreferences(prefs)}
+        onSave={handleSavePreferences}
       />
 
       {step === 'age' && (
@@ -229,10 +244,7 @@ export default function ProductAnalyzer() {
           onCapture={handleImageCapture}
           loading={loading}
           progress={progress}
-          onBack={() => {
-            setEditingAge(true);
-            setStep('age');
-          }}
+          onBack={handleBack}
         />
       )}
 

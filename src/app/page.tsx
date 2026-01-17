@@ -8,6 +8,81 @@ import StepCard from "@/components/StepCard";
 import Accordion from "@/components/Accordion";
 import Logo from "@/components/Logo";
 
+// Static data moved outside component to prevent recreation on every render
+const FEATURES = [
+  {
+    icon: Shield,
+    title: "Deep Ingredient Scan",
+    description: "AI reveals hidden sugars, additives, and allergens instantly with detailed breakdown.",
+    accentColor: 'emerald' as const
+  },
+  {
+    icon: Heart,
+    title: "Age-Personalized Score",
+    description: "Custom health rating tailored for Indian diets and your specific age group.",
+    accentColor: 'cyan' as const
+  },
+  {
+    icon: Zap,
+    title: "Instant Verdict",
+    description: "Get take/avoid/think advice with actionable healthier swap suggestions.",
+    accentColor: 'violet' as const
+  }
+];
+
+const STEPS = [
+  {
+    number: 1,
+    icon: Scan,
+    title: "Scan Product",
+    description: "Point your camera at any packaged food ingredient label."
+  },
+  {
+    number: 2,
+    icon: Search,
+    title: "AI Analysis",
+    description: "Advanced AI decodes ingredients and nutritional values instantly."
+  },
+  {
+    number: 3,
+    icon: CheckCircle,
+    title: "Get Verdict",
+    description: "Receive a clear health score and personalized recommendations."
+  }
+];
+
+const FAQS = [
+  {
+    title: "How accurate is the analysis?",
+    content: "Our AI is trained on a vast database of food ingredients and nutritional guidelines. While highly accurate, we always recommend verifying with a professional for serious medical conditions."
+  },
+  {
+    title: "Is my data private?",
+    content: "Yes! All processing happens locally on your device where possible, and we do not store images of your food scans. Your health data remains yours."
+  },
+  {
+    title: "Does it work for Indian products?",
+    content: "Absolutely. We have specifically tuned our model to recognize common Indian ingredients, brands, and dietary habits."
+  },
+  {
+    title: "Is it free to use?",
+    content: "Yes, the core scanning and analysis features are completely free to use to help you make healthier choices."
+  }
+];
+
+const TESTIMONIALS = [
+  { name: "Priya S.", role: "Nutritionist", text: "Finally an app that understands Indian ingredients! It's been a game changer for my clients.", avatar: "P" },
+  { name: "Rahul M.", role: "Fitness Coach", text: "The age-personalized scoring is brilliant. It helps me tailor advice for different age groups instantly.", avatar: "R" },
+  { name: "Anjali K.", role: "Mother of two", text: "I use this every time I go grocery shopping. It's so reassuring to know what's really in the packet.", avatar: "A" }
+];
+
+const STATS = [
+  { value: "50K+", label: "Products Scanned", icon: Scan },
+  { value: "10K+", label: "Active Users", icon: Users },
+  { value: "98%", label: "Accuracy Rate", icon: TrendingUp },
+  { value: "100+", label: "Indian Brands", icon: Globe }
+];
+
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -19,80 +94,6 @@ export default function Home() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const features = [
-    {
-      icon: Shield,
-      title: "Deep Ingredient Scan",
-      description: "AI reveals hidden sugars, additives, and allergens instantly with detailed breakdown.",
-      accentColor: 'emerald' as const
-    },
-    {
-      icon: Heart,
-      title: "Age-Personalized Score",
-      description: "Custom health rating tailored for Indian diets and your specific age group.",
-      accentColor: 'cyan' as const
-    },
-    {
-      icon: Zap,
-      title: "Instant Verdict",
-      description: "Get take/avoid/think advice with actionable healthier swap suggestions.",
-      accentColor: 'violet' as const
-    }
-  ];
-
-  const steps = [
-    {
-      number: 1,
-      icon: Scan,
-      title: "Scan Product",
-      description: "Point your camera at any packaged food ingredient label."
-    },
-    {
-      number: 2,
-      icon: Search,
-      title: "AI Analysis",
-      description: "Advanced AI decodes ingredients and nutritional values instantly."
-    },
-    {
-      number: 3,
-      icon: CheckCircle,
-      title: "Get Verdict",
-      description: "Receive a clear health score and personalized recommendations."
-    }
-  ];
-
-  const faqs = [
-    {
-      title: "How accurate is the analysis?",
-      content: "Our AI is trained on a vast database of food ingredients and nutritional guidelines. While highly accurate, we always recommend verifying with a professional for serious medical conditions."
-    },
-    {
-      title: "Is my data private?",
-      content: "Yes! All processing happens locally on your device where possible, and we do not store images of your food scans. Your health data remains yours."
-    },
-    {
-      title: "Does it work for Indian products?",
-      content: "Absolutely. We have specifically tuned our model to recognize common Indian ingredients, brands, and dietary habits."
-    },
-    {
-      title: "Is it free to use?",
-      content: "Yes, the core scanning and analysis features are completely free to use to help you make healthier choices."
-    }
-  ];
-
-  const testimonials = [
-    { name: "Priya S.", role: "Nutritionist", text: "Finally an app that understands Indian ingredients! It's been a game changer for my clients.", avatar: "P" },
-    { name: "Rahul M.", role: "Fitness Coach", text: "The age-personalized scoring is brilliant. It helps me tailor advice for different age groups instantly.", avatar: "R" },
-    { name: "Anjali K.", role: "Mother of two", text: "I use this every time I go grocery shopping. It's so reassuring to know what's really in the packet.", avatar: "A" }
-  ];
-
-  const stats = [
-    { value: "50K+", label: "Products Scanned", icon: Scan },
-    { value: "10K+", label: "Active Users", icon: Users },
-    { value: "98%", label: "Accuracy Rate", icon: TrendingUp },
-    { value: "100+", label: "Indian Brands", icon: Globe }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-hero overflow-hidden relative">
@@ -158,7 +159,7 @@ export default function Home() {
 
                 {/* Quick stats */}
                 <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-slate-200">
-                  {stats.slice(0, 3).map((stat, i) => (
+                  {STATS.slice(0, 3).map((stat, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 flex items-center justify-center">
                         <stat.icon className="w-6 h-6 text-emerald-600" />
@@ -255,7 +256,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {features.map((feature, index) => (
+              {FEATURES.map((feature, index) => (
                 <FeatureCard key={index} {...feature} />
               ))}
             </div>
@@ -281,7 +282,7 @@ export default function Home() {
               <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-emerald-200 via-cyan-200 to-violet-200" />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                {steps.map((step, index) => (
+                {STEPS.map((step, index) => (
                   <StepCard key={index} {...step} />
                 ))}
               </div>
@@ -366,7 +367,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {testimonials.map((testimonial, i) => (
+              {TESTIMONIALS.map((testimonial, i) => (
                 <div 
                   key={i} 
                   className={`group relative bg-white p-8 rounded-2xl shadow-lg border transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
@@ -414,7 +415,7 @@ export default function Home() {
               </h2>
             </div>
 
-            <Accordion items={faqs} />
+            <Accordion items={FAQS} />
           </section>
 
           {/* Final CTA Section */}
